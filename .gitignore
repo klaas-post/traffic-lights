@@ -1,0 +1,33 @@
+# Lasal binary output files
+*.lob
+*.lba
+*.lcb
+*.obj
+*.bin
+
+# Backup files (f.e. created by WinMerge)
+*.bak
+*.st.bak
+
+# lock files from editor
+*.lock
+*.LOCK
+
+ProjectInternal/
+
+# generator source files
+ONE_*.st
+ConfigObjects.st
+global.ldi
+
+# misc output
+MaeExp.txt
+MaeExp.xml
+MultiMasterExp.mme
+
+# Files and folders belonging to LSE
+
+BAK/
+Bak/
+Language/
+Runtime/
