@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Network Name="LseRtkAlarmVis" Revision="0.0">
+	<!-- List of Components in this network -->
+	<Components>
+		<Object
+			Name       = "AlarmHistory"
+			GUID       = "{70DA588D-4D17-4D73-BDF9-63A2060E6682}"
+			Class      = "_AlarmDisplay"
+			Position   = "(240,210)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Acknowledge"/>
+				<Server Name="ActPos"/>
+				<Server Name="Delete"/>
+				<Server Name="NoActive"/>
+				<Server Name="Refresh"/>
+				<Server Name="Server0"/>
+				<Server Name="SortAlgorithm"/>
+				<Client Name="cDpne"/>
+				<Client Name="Filter" Value="0"/>
+				<Client Name="HistoryTemporary" Value="0"/>
+				<Client Name="Lse"/>
+				<Client Name="MaxNo" Value="100"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{FC597408-EBE4-11D6-8BC9-0048545E8899}" Class="_ScrollArea">
+							<Channels>
+								<Server Name="ActPos"/>
+								<Server Name="Refresh"/>
+								<Server Name="Server0"/>
+								<Client Name="ExtendedScrollBar" Value="0"/>
+								<Client Name="LineHighness"/>
+								<Client Name="LineWidth" Value="1"/>
+								<Client Name="Lse"/>
+								<Client Name="VerticalLevel" Value="1"/>
+							</Channels>
+							<!-- List of Networks in this component -->
+							<Networks>
+								<Network>
+									<!-- List of Components in this network -->
+									<Components>
+										<Object Name="_base" GUID="{17373B4C-4288-11D7-8BC9-0048545E8899}" Class="_MyIO">
+											<Channels>
+												<Server Name="Refresh"/>
+												<Server Name="Server0"/>
+												<Client Name="Graphic"/>
+												<Client Name="Lse"/>
+											</Channels>
+										</Object>
+									</Components>
+									<Connections>
+									</Connections>
+								</Network>
+							</Networks>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+		<Object
+			Name       = "AlarmTemporary"
+			GUID       = "{AF6D5F9A-A4B1-4306-A116-550D5C1A6E88}"
+			Class      = "_AlarmDisplay"
+			Position   = "(930,210)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Acknowledge"/>
+				<Server Name="ActPos"/>
+				<Server Name="Delete"/>
+				<Server Name="NoActive"/>
+				<Server Name="Refresh"/>
+				<Server Name="Server0"/>
+				<Server Name="SortAlgorithm"/>
+				<Client Name="cDpne"/>
+				<Client Name="Filter" Value="10"/>
+				<Client Name="HistoryTemporary" Value="1"/>
+				<Client Name="Lse"/>
+				<Client Name="MaxNo" Value="100"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{FC597408-EBE4-11D6-8BC9-0048545E8899}" Class="_ScrollArea">
+							<Channels>
+								<Server Name="ActPos"/>
+								<Server Name="Refresh"/>
+								<Server Name="Server0"/>
+								<Client Name="ExtendedScrollBar" Value="0"/>
+								<Client Name="LineHighness"/>
+								<Client Name="LineWidth" Value="1"/>
+								<Client Name="Lse"/>
+								<Client Name="VerticalLevel" Value="1"/>
+							</Channels>
+							<!-- List of Networks in this component -->
+							<Networks>
+								<Network>
+									<!-- List of Components in this network -->
+									<Components>
+										<Object Name="_base" GUID="{17373B4C-4288-11D7-8BC9-0048545E8899}" Class="_MyIO">
+											<Channels>
+												<Server Name="Refresh"/>
+												<Server Name="Server0"/>
+												<Client Name="Graphic"/>
+												<Client Name="Lse"/>
+											</Channels>
+										</Object>
+									</Components>
+									<Connections>
+									</Connections>
+								</Network>
+							</Networks>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+		<Object
+			Name       = "HotAlarm"
+			GUID       = "{4EB7427D-DB07-4131-9A02-4493654136A5}"
+			Class      = "_HotAlarm"
+			Position   = "(1620,210)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Server0"/>
+				<Client Name="Lse"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{2497BFE1-EFCC-11D6-8BC9-0048545E8899}" Class="_MyIO">
+							<Channels>
+								<Server Name="Refresh"/>
+								<Server Name="Server0"/>
+								<Client Name="Graphic"/>
+								<Client Name="Lse"/>
+							</Channels>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+	</Components>
+	<Comments>
+		<Comment Position="(150,90)" Size="(1800,60)" Text="Visualisation part of the alarm system"/>
+	</Comments>
+	<!-- List of Connections in this network -->
+	<Connections>
+		<Connection Source="AlarmHistory.Lse" Destination="Lse.Lse"/>
+		<Connection Source="AlarmTemporary.Lse" Destination="Lse.Lse"/>
+		<Connection Source="HotAlarm.Lse" Destination="Lse.Lse"/>
+	</Connections>
+	<!-- Headerfiles -->
+	<Options>
+	</Options>
+</Network>

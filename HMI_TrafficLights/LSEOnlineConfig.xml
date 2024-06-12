@@ -1,0 +1,12 @@
+<XML_ONLINE_CONFIGURATION>
+<HEADER VERSION="109"/>
+<SETTINGS>
+<ONLINE>
+<TCPIP ConfigName="HMI" BUS="3" Password="" IP="10.195.0.20" PORT="1954" SomeFlags="0" PLCID="" Repeater="0" SSLTLS="0" Favorite="0"/>
+</ONLINE>
+<DOWNLOAD/>
+<PROPERTIES DownlEqualOnl="1"/>
+</SETTINGS>
+<TCPIP ConfigName="HMI" BUS="3" Password="" IP="10.195.0.20" PORT="1954" SomeFlags="0" PLCID="" Repeater="0" SSLTLS="0" Favorite="0"/>
+</XML_ONLINE_CONFIGURATION>
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Network Name="Intersection" Revision="0.0">
+	<!-- List of Components in this network -->
+	<Components>
+		<Object
+			Name       = "TrafficLight1"
+			GUID       = "{D81B217B-BB77-4989-9560-B01778976E99}"
+			Class      = "TrafficLight"
+			Position   = "(180,300)"
+			Visualized = "true"
+			CyclicTime = "100 ms">
+			<Channels>
+				<Server Name="ClassSvr"/>
+				<Server Name="Light" Value="2"/>
+				<Client Name="I_ParallelLight"/>
+			</Channels>
+		</Object>
+		<Object
+			Name       = "TrafficLight2"
+			GUID       = "{56FA351D-DCCD-4876-8451-0C0E0AE0F528}"
+			Class      = "TrafficLight"
+			Position   = "(930,360)"
+			Visualized = "true"
+			CyclicTime = "100 ms">
+			<Channels>
+				<Server Name="ClassSvr"/>
+				<Server Name="Light" Value="0"/>
+				<Client Name="I_ParallelLight"/>
+			</Channels>
+		</Object>
+	</Components>
+	<Comments>
+	</Comments>
+	<!-- List of Connections in this network -->
+	<Connections>
+		<Connection Source="TrafficLight2.I_ParallelLight" Destination="TrafficLight1.Light" Vertices="(930,450),(692,450),"/>
+		<Connection Source="TrafficLight1.I_ParallelLight" Destination="TrafficLight2.Light" Vertices="(180,390),(120,390),(120,600),(1500,600),(1500,510),(1442,510),"/>
+	</Connections>
+	<!-- Headerfiles -->
+	<Options>
+	</Options>
+</Network>

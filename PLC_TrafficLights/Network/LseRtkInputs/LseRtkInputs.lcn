@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Network Name="LseRtkInputs" Revision="0.0">
+	<!-- List of Components in this network -->
+	<Components>
+		<Object
+			Name       = "KeyPadAnum"
+			GUID       = "{74425D8E-D558-4243-AE9C-775407605EDA}"
+			Class      = "KeyPadAnum"
+			Position   = "(210,420)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Screen"/>
+				<Client Name="AltGr" Value="1"/>
+				<Client Name="CapitalLetter" Value="0"/>
+				<Client Name="ImA" Value="IMA_WINDOW"/>
+				<Client Name="Lse"/>
+				<Client Name="No" Value="_WIN_EDITOR_ANUMERIC"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{A426951D-7399-48D4-BA08-F18542496EED}" Class="_Screen">
+							<Channels>
+								<Server Name="Screen"/>
+								<Client Name="ImA" Value="IMA_WINDOW"/>
+								<Client Name="Lse"/>
+								<Client Name="No" Value="_WIN_EDITOR_ANUMERIC"/>
+							</Channels>
+						</Object>
+						<Object Name="KeyPadImg" GUID="{948A1B45-184E-460A-AA35-88A8B97A3BB9}" Class="KeyPadImages">
+							<Channels>
+								<Server Name="ClassSvr"/>
+							</Channels>
+							<!-- List of Networks in this component -->
+							<Networks>
+								<Network>
+									<!-- List of Components in this network -->
+									<Components>
+									</Components>
+									<Connections>
+									</Connections>
+								</Network>
+							</Networks>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+		<Object
+			Name       = "KeyPadNum"
+			GUID       = "{0E97FCD1-C9B1-4C52-A487-99778E5F5922}"
+			Class      = "KeyPadNum"
+			Position   = "(210,150)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Screen"/>
+				<Client Name="ImA" Value="IMA_WINDOW"/>
+				<Client Name="Lse"/>
+				<Client Name="No" Value="_WIN_EDITOR_NUMERIC"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{BDEF1F3C-48D7-458D-8414-141CE86598D9}" Class="_Screen">
+							<Channels>
+								<Server Name="Screen"/>
+								<Client Name="ImA" Value="IMA_WINDOW"/>
+								<Client Name="Lse"/>
+								<Client Name="No" Value="_WIN_EDITOR_NUMERIC"/>
+							</Channels>
+						</Object>
+						<Object Name="KeyPadImg" GUID="{AAD070FC-C7A5-45F2-B9AE-CAC1AC1099D2}" Class="KeyPadImages">
+							<Channels>
+								<Server Name="ClassSvr"/>
+							</Channels>
+							<!-- List of Networks in this component -->
+							<Networks>
+								<Network>
+									<!-- List of Components in this network -->
+									<Components>
+									</Components>
+									<Connections>
+									</Connections>
+								</Network>
+							</Networks>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+		<Object
+			Name       = "XAccess0"
+			GUID       = "{3B63ACF9-6DEA-4C2B-8625-57CF04818152}"
+			Class      = "_XAccess"
+			Position   = "(690,150)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="Key1"/>
+				<Server Name="Key2"/>
+				<Server Name="Key3"/>
+				<Server Name="Level"/>
+				<Server Name="Server0"/>
+				<Server Name="TimeOut"/>
+				<Client Name="Lse"/>
+			</Channels>
+			<!-- List of Networks in this component -->
+			<Networks>
+				<Network>
+					<!-- List of Components in this network -->
+					<Components>
+						<Object Name="_base" GUID="{37E81649-519A-11D8-8BCB-0048545E8899}" Class="_Global">
+							<Channels>
+								<Server Name="Server0"/>
+								<Client Name="Lse"/>
+							</Channels>
+						</Object>
+						<Object Name="Ram0" GUID="{37E81652-519A-11D8-8BCB-0048545E8899}" Class="Ram">
+							<Channels>
+								<Server Name="Data"/>
+							</Channels>
+						</Object>
+						<Object Name="Ram1" GUID="{37E81655-519A-11D8-8BCB-0048545E8899}" Class="Ram">
+							<Channels>
+								<Server Name="Data"/>
+							</Channels>
+						</Object>
+						<Object Name="Ram2" GUID="{37E81658-519A-11D8-8BCB-0048545E8899}" Class="Ram">
+							<Channels>
+								<Server Name="Data"/>
+							</Channels>
+						</Object>
+						<Object Name="Ram3" GUID="{37E8165B-519A-11D8-8BCB-0048545E8899}" Class="Ram">
+							<Channels>
+								<Server Name="Data"/>
+							</Channels>
+						</Object>
+					</Components>
+					<Connections>
+					</Connections>
+				</Network>
+			</Networks>
+		</Object>
+	</Components>
+	<Comments>
+	</Comments>
+	<!-- List of Connections in this network -->
+	<Connections>
+		<Connection Source="XAccess0.Lse" Destination="Lse.Lse"/>
+		<Connection Source="KeyPadAnum.Lse" Destination="Lse.Lse"/>
+		<Connection Source="KeyPadNum.Lse" Destination="Lse.Lse"/>
+	</Connections>
+	<!-- Headerfiles -->
+	<Options>
+	</Options>
+</Network>
