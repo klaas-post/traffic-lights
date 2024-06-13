@@ -21,7 +21,7 @@
 	<Channels>
 		<Server Name="ClassSvr" GUID="{D43DBC21-BCC5-4325-A3B3-DB1B224D469E}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
 		<Server Name="Light" GUID="{AFF77109-628C-42B4-889E-A62D17FCCE65}" Visualized="true" Initialize="true" DefValue="0" WriteProtected="true" Retentive="false"/>
-		<Client Name="I_ParallelLight" Required="true" Internal="false"/>
+		<Client Name="I_StopSignal" Required="true" Internal="false"/>
 	</Channels>
 </Class>
 *)
@@ -30,11 +30,9 @@ TrafficLight : CLASS
 	ClassSvr 	: SvrChCmd_DINT;
 	Light 	: SvrCh_DINT;
   //Clients:
-	I_ParallelLight 	: CltCh_DINT;
+	I_StopSignal 	: CltCh_DINT;
   //Variables:
-		tYellowLight 	: UDINT;
-		tRedLight 	: UDINT;
-		tGreenLight 	: UDINT;
+		tLightChanged 	: UDINT;
   //Functions:
 	
 	FUNCTION VIRTUAL GLOBAL CyWork
@@ -66,7 +64,7 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::TrafficLight.ClassSvr.pMeth)$UINT, _CH_CMD$UINT, 2#0000000000000000$UINT, TO_UDINT(619352855), "ClassSvr", 
 (::TrafficLight.Light.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(2622398023), "Light", 
 //Clients:
-(::TrafficLight.I_ParallelLight.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(2607942185), "I_ParallelLight", 
+(::TrafficLight.I_StopSignal.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(2795144699), "I_StopSignal", 
 END_FUNCTION
 
 
@@ -110,23 +108,21 @@ FUNCTION VIRTUAL GLOBAL TrafficLight::CyWork
 		state (EAX) 	: UDINT;
 	END_VAR
     
-    I_ParallelLight := I_ParallelLight.Read();
+    I_StopSignal := I_StopSignal.Read();
     
     CASE Light OF
         // Light is Red
-        0:  IF ops.tAbsolute - tRedLight > 7 sec THEN
+        0:  IF I_StopSignal = 0 THEN
                 Light := 2; // Turn Green
-                tGreenLight := ops.tAbsolute; // Mark time
             END_IF;
         // Light is Yellow
-        1:  IF ops.tAbsolute - tYellowLight > 2 sec THEN
+        1:  IF OPS.tAbsolute - tLightChanged > 2 sec THEN
                 Light := 0; // Turn Red after when two seconds have passed
-                tRedLight := ops.tAbsolute; // Mark time
             END_IF;
         // Light is Green
-        2:  IF I_ParallelLight = 2 THEN
+        2:  IF I_StopSignal = 1 THEN
                 Light := 1; // Turn Yellow
-                tYellowLight := ops.tAbsolute; // Mark time
+                tLightChanged := OPS.tAbsolute; // Mark time
             END_IF;
 
     END_CASE;
