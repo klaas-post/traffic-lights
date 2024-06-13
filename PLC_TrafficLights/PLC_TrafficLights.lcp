@@ -2,9 +2,13 @@
 <Project
 	Version            = "13"
 	Name               = "PLC_TrafficLights"
+	OnlineConnection   = "PLC"
 	SolutionType       = "Large"
 	WriteSrvListOnSave = "true"
 	CLASSType          = "true">
+	<OnlineConnectionInfo>
+		<TCPIP ConfigName="PLC" BUS="3" Password="" IP="10.195.1.52" PORT="1954" SomeFlags="0" PLCID="" Repeater="0" SSLTLS="0" Favorite="0"/>
+	</OnlineConnectionInfo>
 	<HeaderFiles>
 		<File Path=".\Include\unit.h"/>
 		<File Path=".\Include\global.h"/>
@@ -79,6 +83,7 @@
 		<File Path=".\Class\StringInternal\StringDefs.h" Global="true"/>
 		<File Path=".\lsl_st_mt.h"/>
 		<File Path=".\lsl_st_serial.h" Global="true"/>
+		<File Path=".\Class\Ram\Ram.h" Global="true"/>
 	</HeaderFiles>
 	<ClassFiles>
 		<File Path=".\Class\TrafficLight\TrafficLight.st"/>
@@ -157,6 +162,9 @@
 		<File Path=".\Class\ASCII_BIN\ASCII_BIN.st"/>
 		<File Path=".\Class\CriticalSection\CriticalSection.st"/>
 		<File Path=".\Class\RamFile\RamFile.st"/>
+		<File Path=".\Class\TrafficControl\TrafficControl.st"/>
+		<File Path=".\Class\Road\Road.st"/>
+		<File Path=".\Class\Ram\Ram.st"/>
 	</ClassFiles>
 	<NetworkFiles>
 		<File Path=".\Network\HW_Network\HW_Network.lcn"/>
@@ -165,10 +173,6 @@
 	<ObjectFiles>
 		<File Path=".\Loader\Source\Loader.lob" Downloadable="false"/>
 	</ObjectFiles>
-	<LibraryFiles>
-		<File Path=".\Hardware\Hardware.lcp"/>
-		<File Path=".\Tools\Tools.lcp"/>
-	</LibraryFiles>
 	<Options>
 		<Target UseFPU="true" Processor="ARM">
 		</Target>
@@ -257,6 +261,7 @@
 		<Folder Name="System">
 			<Folder Name="Memory">
 				<Class Name="MerkerEx"/>
+				<Class Name="Ram"/>
 				<Class Name="String"/>
 				<Class Name="StringInternal"/>
 				<Class Name="VirtualBaseInit"/>
