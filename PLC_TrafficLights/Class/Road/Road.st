@@ -20,17 +20,17 @@
 	Objectsize         = "(476,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{39167C79-0530-4A1E-BF4F-A9DF15F7CA3C}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="IncomingTraffic" GUID="{C0CECF47-6DEA-4296-B811-DBAF2D9D0E9F}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
-		<Client Name="I_Signal" Required="true" Internal="false"/>
+		<Server Name="Svr_IncomingCars" GUID="{C0CECF47-6DEA-4296-B811-DBAF2D9D0E9F}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
+		<Client Name="I_TrafficLight" Required="true" Internal="false"/>
 	</Channels>
 </Class>
 *)
 Road : CLASS
   //Servers:
 	ClassSvr 	: SvrChCmd_DINT;
-	IncomingTraffic 	: SvrCh_DINT;
+	Svr_IncomingCars 	: SvrCh_DINT;
   //Clients:
-	I_Signal 	: CltCh_DINT;
+	I_TrafficLight 	: CltCh__LightColor_PTofCls_TrafficLight;
   //Variables:
 		tLastCarPassed 	: UDINT;
   //Functions:
@@ -41,19 +41,6 @@ Road : CLASS
 		END_VAR
 		VAR_OUTPUT
 			state (EAX) 	: UDINT;
-		END_VAR;
-	
-	FUNCTION VIRTUAL GLOBAL IncomingTraffic::Read
-		VAR_OUTPUT
-			output (EAX) 	: DINT;
-		END_VAR;
-	
-	FUNCTION VIRTUAL GLOBAL IncomingTraffic::Write
-		VAR_INPUT
-			input (EAX) 	: DINT;
-		END_VAR
-		VAR_OUTPUT
-			result (EAX) 	: DINT;
 		END_VAR;
   //Tables:
 	FUNCTION @STD
@@ -75,9 +62,9 @@ TO_UDINT(2740267269), "Road", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
 (::Road.ClassSvr.pMeth)$UINT, _CH_CMD$UINT, 2#0000000000000000$UINT, TO_UDINT(619352855), "ClassSvr", 
-(::Road.IncomingTraffic.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(519730391), "IncomingTraffic", 
+(::Road.Svr_IncomingCars.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(706216677), "Svr_IncomingCars", 
 //Clients:
-(::Road.I_Signal.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(3009113121), "I_Signal", 
+(::Road.I_TrafficLight.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(1043360495), "I_TrafficLight", 
 END_FUNCTION
 
 
@@ -109,8 +96,8 @@ FUNCTION Road::@STD
 		ret_code	:= C_OUTOF_NEAR;
 		RETURN;
 	END_IF;
-	IncomingTraffic.pMeth			:= StoreMethod( #IncomingTraffic::Read(), #IncomingTraffic::Write() );
-	IF IncomingTraffic.pMeth THEN
+	Svr_IncomingCars.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_IncomingCars.pMeth THEN
 		ret_code	:= C_OK;
 	ELSE
 		ret_code	:= C_OUTOF_NEAR;
@@ -120,6 +107,10 @@ FUNCTION Road::@STD
 END_FUNCTION
 
 //{{LSL_IMPLEMENTATION
+//----------------------------------------------------------------------------------------------------
+//  Standard class methods
+//----------------------------------------------------------------------------------------------------
+
 FUNCTION VIRTUAL GLOBAL Road::CyWork
 	VAR_INPUT
 		EAX 	: UDINT;
@@ -128,49 +119,30 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
 		state (EAX) 	: UDINT;
 	END_VAR
     
-    // Read signal given by traffic light.
-    I_Signal := I_Signal.Read();
-    
     // If there's no cars waiting, exit function.
-    IF IncomingTraffic < 1 THEN
+    IF Svr_IncomingCars < 1 THEN
         state := READY;
         RETURN;
     END_IF;
+    
+    // Car(s) read the traffic light.
+    I_TrafficLight := I_TrafficLight.Read();
     
     // If the signal is red, exit function.
-    IF I_Signal = 0 THEN
+    IF I_TrafficLight = TrafficLight::LC_Red THEN
         state := READY;
         RETURN;
     END_IF;
     
-    IncomingTraffic -= 1;
+    // If light is yellow, traffic might pass or might not.
+    IF I_TrafficLight = TrafficLight::LC_Yellow & OPS.tAbsolute MOD 3 = 0 THEN
+        state := READY;
+        RETURN;
+    END_IF;
+    
+    // Car is free to go so decrease incoming traffic by one.
+    Svr_IncomingCars -= 1;
 
 	state := READY;
-
-END_FUNCTION
-
-
-FUNCTION VIRTUAL GLOBAL Road::IncomingTraffic::Read
-	VAR_OUTPUT
-		output (EAX) 	: DINT;
-	END_VAR
-
-	output := IncomingTraffic;
-
-END_FUNCTION
-
-
-
-
-FUNCTION VIRTUAL GLOBAL Road::IncomingTraffic::Write
-	VAR_INPUT
-		input (EAX) 	: DINT;
-	END_VAR
-	VAR_OUTPUT
-		result (EAX) 	: DINT;
-	END_VAR
-
-	IncomingTraffic := input;
-	result := IncomingTraffic;
 
 END_FUNCTION

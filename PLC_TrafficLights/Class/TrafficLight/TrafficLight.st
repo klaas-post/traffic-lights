@@ -20,19 +20,28 @@
 	Objectsize         = "(496,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{D43DBC21-BCC5-4325-A3B3-DB1B224D469E}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Light" GUID="{AFF77109-628C-42B4-889E-A62D17FCCE65}" Visualized="true" Initialize="true" DefValue="0" WriteProtected="true" Retentive="false"/>
-		<Client Name="I_StopSignal" Required="true" Internal="false"/>
+		<Server Name="Svr_Light" GUID="{AFF77109-628C-42B4-889E-A62D17FCCE65}" Visualized="true" Initialize="true" DefValue="0" WriteProtected="false" Retentive="false"/>
+		<Server Name="Svr_SwitchDelay" GUID="{548ED515-C36E-46D4-938F-34B1CC3C2576}" Visualized="false" Initialize="true" DefValue="2 sec" WriteProtected="false" Retentive="SRam"/>
 	</Channels>
 </Class>
 *)
 TrafficLight : CLASS
+	TYPE
+	  _LightColor :  //! <Type Public="true" Name="_LightColor"/>
+	  (
+	    LC_Red:=0,
+	    LC_Yellow:=1,
+	    LC_Green:=2
+	  )$DINT;
+	END_TYPE
   //Servers:
 	ClassSvr 	: SvrChCmd_DINT;
-	Light 	: SvrCh_DINT;
+	Svr_Light 	: SvrCh__LightColor_PTofCls_TrafficLight;
+	Svr_SwitchDelay 	: SvrCh_UDINT;
   //Clients:
-	I_StopSignal 	: CltCh_DINT;
   //Variables:
-		tLightChanged 	: UDINT;
+		tSignalChanged 	: UDINT;
+		bStopSignal 	: BOOL;
   //Functions:
 	
 	FUNCTION VIRTUAL GLOBAL CyWork
@@ -41,6 +50,11 @@ TrafficLight : CLASS
 		END_VAR
 		VAR_OUTPUT
 			state (EAX) 	: UDINT;
+		END_VAR;
+	
+	FUNCTION GLOBAL SetSignal
+		VAR_INPUT
+			ShouldStop 	: BOOL;
 		END_VAR;
   //Tables:
 	FUNCTION @STD
@@ -57,14 +71,14 @@ FUNCTION GLOBAL TAB TrafficLight::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICLIGHT
 0$UINT, 0$UINT, (SIZEOF(::TrafficLight))$UINT, 
-2$UINT, 1$UINT, 0$UINT, 
+3$UINT, 0$UINT, 0$UINT, 
 TO_UDINT(1430994866), "TrafficLight", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
 (::TrafficLight.ClassSvr.pMeth)$UINT, _CH_CMD$UINT, 2#0000000000000000$UINT, TO_UDINT(619352855), "ClassSvr", 
-(::TrafficLight.Light.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(2622398023), "Light", 
+(::TrafficLight.Svr_Light.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(761379002), "Svr_Light", 
+(::TrafficLight.Svr_SwitchDelay.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(3154802279), "Svr_SwitchDelay", 
 //Clients:
-(::TrafficLight.I_StopSignal.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(2795144699), "I_StopSignal", 
 END_FUNCTION
 
 
@@ -96,10 +110,29 @@ FUNCTION TrafficLight::@STD
 		ret_code	:= C_OUTOF_NEAR;
 		RETURN;
 	END_IF;
+	Svr_Light.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_Light.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
+	Svr_SwitchDelay.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_SwitchDelay.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
 
 END_FUNCTION
 
 //{{LSL_IMPLEMENTATION
+
+//----------------------------------------------------------------------------------------------------
+//  Standard class methods
+//----------------------------------------------------------------------------------------------------
+
 FUNCTION VIRTUAL GLOBAL TrafficLight::CyWork
 	VAR_INPUT
 		EAX 	: UDINT;
@@ -108,25 +141,47 @@ FUNCTION VIRTUAL GLOBAL TrafficLight::CyWork
 		state (EAX) 	: UDINT;
 	END_VAR
     
-    I_StopSignal := I_StopSignal.Read();
-    
-    CASE Light OF
-        // Light is Red
-        0:  IF I_StopSignal = 0 THEN
-                Light := 2; // Turn Green
-            END_IF;
-        // Light is Yellow
-        1:  IF OPS.tAbsolute - tLightChanged > 2 sec THEN
-                Light := 0; // Turn Red after when two seconds have passed
-            END_IF;
-        // Light is Green
-        2:  IF I_StopSignal = 1 THEN
-                Light := 1; // Turn Yellow
-                tLightChanged := OPS.tAbsolute; // Mark time
+        CASE Svr_Light OF
+
+        // Svr_Light is Green -> Yellow
+        LC_Green:  
+            IF bStopSignal THEN
+                Svr_Light := LC_Yellow;
             END_IF;
 
-    END_CASE;
+        // Svr_Light is Yellow -> Red
+        LC_Yellow:
+            IF (OPS.tAbsolute - tSignalChanged) > Svr_SwitchDelay THEN
+                Svr_Light := LC_Red;
+            END_IF;
+        
+        // Svr_Light is Red -> Green
+        LC_Red:
+            IF bStopSignal = FALSE & (OPS.tAbsolute - tSignalChanged) > Svr_SwitchDelay THEN
+                Svr_Light := LC_Green;
+            END_IF;
+        END_CASE;
 
 	state := READY;
+
+END_FUNCTION
+
+//----------------------------------------------------------------------------------------------------
+//  Externally called methods
+//----------------------------------------------------------------------------------------------------
+
+
+// Sets the signal so the traffic light can turn to the right color.
+FUNCTION GLOBAL TrafficLight::SetSignal
+	VAR_INPUT
+		ShouldStop 	: BOOL;
+	END_VAR
+    
+    IF bStopSignal = ShouldStop THEN
+        RETURN;
+    END_IF;
+
+    bStopSignal := ShouldStop;
+    tSignalChanged := OPS.tAbsolute;
 
 END_FUNCTION

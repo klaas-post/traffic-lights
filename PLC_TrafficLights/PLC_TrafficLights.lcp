@@ -83,7 +83,6 @@
 		<File Path=".\Class\StringInternal\StringDefs.h" Global="true"/>
 		<File Path=".\lsl_st_mt.h"/>
 		<File Path=".\lsl_st_serial.h" Global="true"/>
-		<File Path=".\Class\Ram\Ram.h" Global="true"/>
 	</HeaderFiles>
 	<ClassFiles>
 		<File Path=".\Class\TrafficLight\TrafficLight.st"/>
@@ -164,7 +163,6 @@
 		<File Path=".\Class\RamFile\RamFile.st"/>
 		<File Path=".\Class\TrafficControl\TrafficControl.st"/>
 		<File Path=".\Class\Road\Road.st"/>
-		<File Path=".\Class\Ram\Ram.st"/>
 	</ClassFiles>
 	<NetworkFiles>
 		<File Path=".\Network\HW_Network\HW_Network.lcn"/>
@@ -261,7 +259,6 @@
 		<Folder Name="System">
 			<Folder Name="Memory">
 				<Class Name="MerkerEx"/>
-				<Class Name="Ram"/>
 				<Class Name="String"/>
 				<Class Name="StringInternal"/>
 				<Class Name="VirtualBaseInit"/>

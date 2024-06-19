@@ -264,6 +264,17 @@ SdiasBase : CLASS_PUBLIC
 	END_TYPE
 END_CLASS;
 #pragma define (restore)
+TrafficLight : CLASS_PUBLIC
+	TYPE
+	  _LightColor :
+	  (
+	    LC_Red:=0,
+	    LC_Yellow:=1,
+	    LC_Green:=2
+	  )$DINT;
+	END_TYPE
+END_CLASS;
+#pragma define (restore)
 VirtualBaseInit : CLASS_PUBLIC
 	TYPE
 	  CmdData :

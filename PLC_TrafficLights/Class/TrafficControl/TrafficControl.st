@@ -20,32 +20,56 @@
 	Objectsize         = "(462,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{0DE37930-FFC9-4395-ACC2-3B7E6DCA5DA3}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="East" GUID="{294D1E8D-242F-4BF7-B6AB-336131651524}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="North" GUID="{7A1CD75F-5B91-4A8E-99F0-69B09AE3827A}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="South" GUID="{A11D2929-327E-49EA-9987-5EEF19F7153C}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="West" GUID="{5A27B1F6-1573-4CFB-B836-F9A610F71355}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Client Name="I_IncomingEast" Required="true" Internal="false"/>
-		<Client Name="I_IncomingNorth" Required="true" Internal="false"/>
-		<Client Name="I_IncomingSouth" Required="true" Internal="false"/>
-		<Client Name="I_IncomingWest" Required="true" Internal="false"/>
+		<Server Name="Svr_CycleTime" GUID="{12759AB7-CF04-4C00-A69A-873ADA8AEA6E}" Visualized="false" Initialize="true" DefValue="12 sec" WriteProtected="false" Retentive="SRam"/>
+		<Server Name="Svr_DominanceTreshold" GUID="{0B8E7F7F-A5D0-45AF-824E-8A1653C880A5}" Visualized="false" Initialize="true" DefValue="0.1" WriteProtected="false" Retentive="SRam"/>
+		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="5" WriteProtected="false" Retentive="SRam"/>
+		<Client Name="I_TrafficEast" Required="true" Internal="false"/>
+		<Client Name="I_TrafficNorth" Required="true" Internal="false"/>
+		<Client Name="I_TrafficSouth" Required="true" Internal="false"/>
+		<Client Name="I_TrafficWest" Required="true" Internal="false"/>
+		<Client Name="Obj_TrafficLightEast" Required="true" Internal="false"/>
+		<Client Name="Obj_TrafficLightNorth" Required="true" Internal="false"/>
+		<Client Name="Obj_TrafficLightSouth" Required="true" Internal="false"/>
+		<Client Name="Obj_TrafficLightWest" Required="true" Internal="false"/>
 	</Channels>
+	<Separators>
+		<Clients>
+			<SepChn Position="4"/>
+		</Clients>
+	</Separators>
 </Class>
 *)
 TrafficControl : CLASS
+	TYPE
+	  _DominantDirection :
+	  (
+	    DD_None:=0,
+	    DD_EastWest:=1,
+	    DD_NorthSouth:=2
+	  )$DINT;
+	END_TYPE
   //Servers:
 	ClassSvr 	: SvrChCmd_DINT;
-	North 	: SvrCh_DINT;
-	East 	: SvrCh_DINT;
-	South 	: SvrCh_DINT;
-	West 	: SvrCh_DINT;
+	Svr_CycleTime 	: SvrCh_UDINT;
+	Svr_MinTrafficTreshold 	: SvrCh_DINT;
+	Svr_DominanceTreshold 	: SvrCh_REAL;
   //Clients:
-	I_IncomingNorth 	: CltCh_DINT;
-	I_IncomingEast 	: CltCh_DINT;
-	I_IncomingSouth 	: CltCh_DINT;
-	I_IncomingWest 	: CltCh_DINT;
+	I_TrafficNorth 	: CltCh_DINT;
+	I_TrafficEast 	: CltCh_DINT;
+	I_TrafficSouth 	: CltCh_DINT;
+	I_TrafficWest 	: CltCh_DINT;
+	Obj_TrafficLightNorth 	: CltChCmd_TrafficLight;
+	Obj_TrafficLightEast 	: CltChCmd_TrafficLight;
+	Obj_TrafficLightSouth 	: CltChCmd_TrafficLight;
+	Obj_TrafficLightWest 	: CltChCmd_TrafficLight;
   //Variables:
+		TrafficNorthSouth 	: DINT;
+		TrafficEastWest 	: DINT;
+		TotalTraffic 	: DINT;
 		tSignalChanged 	: UDINT;
-		tVerPassageStop 	: UDINT;
+		eDominantDirection 	: _DominantDirection;
+		NorthSouthRatio 	: REAL;
+		EastWestRatio 	: REAL;
   //Functions:
 	
 	FUNCTION VIRTUAL GLOBAL CyWork
@@ -55,6 +79,18 @@ TrafficControl : CLASS
 		VAR_OUTPUT
 			state (EAX) 	: UDINT;
 		END_VAR;
+	
+	FUNCTION SetSignals
+		VAR_INPUT
+			NorthStopSignal 	: BOOL;
+			EastStopSignal 	: BOOL;
+			SouthStopSignal 	: BOOL;
+			WestStopSignal 	: BOOL;
+		END_VAR;
+	
+	FUNCTION SetTraffic;
+	
+	FUNCTION SetDominantDirection;
   //Tables:
 	FUNCTION @STD
 		VAR_OUTPUT
@@ -63,6 +99,9 @@ TrafficControl : CLASS
 	FUNCTION GLOBAL TAB @CT_;
 END_CLASS;
 
+#pragma usingLtd TrafficLight
+
+
 //}}LSL_DECLARATION
 
 
@@ -70,20 +109,23 @@ FUNCTION GLOBAL TAB TrafficControl::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICCONTROL
 0$UINT, 0$UINT, (SIZEOF(::TrafficControl))$UINT, 
-5$UINT, 4$UINT, 0$UINT, 
+4$UINT, 8$UINT, 0$UINT, 
 TO_UDINT(444898770), "TrafficControl", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
 (::TrafficControl.ClassSvr.pMeth)$UINT, _CH_CMD$UINT, 2#0000000000000000$UINT, TO_UDINT(619352855), "ClassSvr", 
-(::TrafficControl.North.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(729739890), "North", 
-(::TrafficControl.East.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(21367710), "East", 
-(::TrafficControl.South.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(3057760196), "South", 
-(::TrafficControl.West.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(4234099798), "West", 
+(::TrafficControl.Svr_CycleTime.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(1223054585), "Svr_CycleTime", 
+(::TrafficControl.Svr_MinTrafficTreshold.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(1229737423), "Svr_MinTrafficTreshold", 
+(::TrafficControl.Svr_DominanceTreshold.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(258850596), "Svr_DominanceTreshold", 
 //Clients:
-(::TrafficControl.I_IncomingNorth.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(732872953), "I_IncomingNorth", 
-(::TrafficControl.I_IncomingEast.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(3514073246), "I_IncomingEast", 
-(::TrafficControl.I_IncomingSouth.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(3062990159), "I_IncomingSouth", 
-(::TrafficControl.I_IncomingWest.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(745387862), "I_IncomingWest", 
+(::TrafficControl.I_TrafficNorth.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(2298480346), "I_TrafficNorth", 
+(::TrafficControl.I_TrafficEast.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(415486397), "I_TrafficEast", 
+(::TrafficControl.I_TrafficSouth.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(339690348), "I_TrafficSouth", 
+(::TrafficControl.I_TrafficWest.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(3856328309), "I_TrafficWest", 
+(::TrafficControl.Obj_TrafficLightNorth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(3478640126), "Obj_TrafficLightNorth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
+(::TrafficControl.Obj_TrafficLightEast.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(648973330), "Obj_TrafficLightEast", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
+(::TrafficControl.Obj_TrafficLightSouth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(1382584392), "Obj_TrafficLightSouth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
+(::TrafficControl.Obj_TrafficLightWest.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(3686251482), "Obj_TrafficLightWest", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
 END_FUNCTION
 
 
@@ -115,10 +157,36 @@ FUNCTION TrafficControl::@STD
 		ret_code	:= C_OUTOF_NEAR;
 		RETURN;
 	END_IF;
+	Svr_CycleTime.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_CycleTime.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
+	Svr_MinTrafficTreshold.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_MinTrafficTreshold.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
+	Svr_DominanceTreshold.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_DominanceTreshold.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
 
 END_FUNCTION
 
 //{{LSL_IMPLEMENTATION
+
+//----------------------------------------------------------------------------------------------------
+//  Standard class methods
+//----------------------------------------------------------------------------------------------------
+
 FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     VAR_INPUT
         EAX     : UDINT;
@@ -127,47 +195,129 @@ FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
         state (EAX)    : UDINT;
     END_VAR
     
-    I_IncomingNorth := I_IncomingNorth.Read();
-    I_IncomingEast := I_IncomingEast.Read();
-    I_IncomingSouth := I_IncomingSouth.Read();
-    I_IncomingWest := I_IncomingWest.Read();
+    // Read incoming traffic
+    I_TrafficNorth := I_TrafficNorth.Read();
+    I_TrafficEast := I_TrafficEast.Read();
+    I_TrafficSouth := I_TrafficSouth.Read();
+    I_TrafficWest := I_TrafficWest.Read();
     
-    IF (I_IncomingNorth + I_IncomingSouth) + (I_IncomingEast + I_IncomingWest) = 0 THEN
-        // Geen verkeer gedetecteerd, standaard op Rood.
-        East := 1;
-        West := 1;
-        North := 1;
-        South := 1;
+    SetDominantDirection();
+    
+    CASE eDominantDirection OF
+    
+    DD_None:
+        SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=TRUE, SouthStopSignal:=TRUE, WestStopSignal:=TRUE);
         
-    ELSIF OPS.tAbsolute - tSignalChanged > 5 SEC THEN
-        IF (I_IncomingNorth + I_IncomingSouth) > (I_IncomingEast + I_IncomingWest) THEN
-            // Oost - West moet stoppen
-            tSignalChanged := OPS.tAbsolute; // Zet tijd van stopsignaal
-            East := 1;
-            West := 1;
-            
-            // Noord - Zuid kan gaan
-            North := 0;
-            South := 0; 
-            
-        ELSIF (I_IncomingNorth + I_IncomingSouth) <= (I_IncomingEast + I_IncomingWest) THEN
-            // Oost - West kan gaan
-            East := 0;
-            West := 0;
-            
-            // Noord - Zuid moet stoppen
-            tSignalChanged := OPS.tAbsolute; // Zet tijd van stopsignaal
-            North := 1;
-            South := 1;
-            
-        END_IF;
-    END_IF;
+    DD_NorthSouth:
+        SetSignals(NorthStopSignal:=FALSE, EastStopSignal:=TRUE, SouthStopSignal:=FALSE, WestStopSignal:=TRUE);
     
-    East.Write(East);
-    West.Write(West);
-    North.Write(North);
-    South.Write(South);
+    DD_EastWest:
+        SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=FALSE, SouthStopSignal:=TRUE, WestStopSignal:=FALSE);
+        
+    END_CASE;
 
     state := READY;
 
+END_FUNCTION
+
+//----------------------------------------------------------------------------------------------------
+//  Internally called methods
+//----------------------------------------------------------------------------------------------------
+
+// Set the signals so Traffic lights know when to switch to green or to yellow then red.
+FUNCTION TrafficControl::SetSignals
+	VAR_INPUT
+		NorthStopSignal 	: BOOL;
+		EastStopSignal 	: BOOL;
+		SouthStopSignal 	: BOOL;
+		WestStopSignal 	: BOOL;
+	END_VAR
+    
+        // Don't change light to green if there's no cars.
+        IF NorthStopSignal = FALSE & I_TrafficNorth = 0 THEN
+            Obj_TrafficLightNorth.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightNorth.SetSignal(ShouldStop:=NorthStopSignal);
+        END_IF;
+        
+        IF EastStopSignal = FALSE & I_TrafficEast = 0 THEN
+            Obj_TrafficLightEast.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightEast.SetSignal(ShouldStop:=EastStopSignal);
+        END_IF;
+        
+        IF SouthStopSignal = FALSE & I_TrafficSouth = 0 THEN
+            Obj_TrafficLightSouth.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightSouth.SetSignal(ShouldStop:=SouthStopSignal);
+        END_IF;
+        
+        IF WestStopSignal = FALSE & I_TrafficWest = 0 THEN
+            Obj_TrafficLightWest.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightWest.SetSignal(ShouldStop:=WestStopSignal);
+        END_IF;
+        
+END_FUNCTION
+
+// Gets the dominant direction, contains all proiritisation logic. 
+FUNCTION TrafficControl::SetDominantDirection
+    
+    // Calculate totals
+    TrafficEastWest := I_TrafficEast + I_TrafficWest;
+    TrafficNorthSouth := I_TrafficNorth + I_TrafficSouth;
+    TotalTraffic := TrafficNorthSouth + TrafficEastWest;
+    
+    // No traffic, set lights to red and reset cycle. 
+    IF TotalTraffic = 0 THEN
+        eDominantDirection := DD_None;
+        tSignalChanged := 0;
+        RETURN;
+    END_IF;
+    
+    // Calculate ratios after traffic has been detected.
+    NorthSouthRatio := (TO_REAL(TrafficNorthSouth) / TotalTraffic);
+    EastWestRatio := (TO_REAL(TrafficEastWest) / TotalTraffic);
+
+    // Check if North-South is dominant.
+    IF (eDominantDirection = DD_NorthSouth) = FALSE & NorthSouthRatio > EastWestRatio + Svr_DominanceTreshold THEN
+    
+        // If theres no cars in opposite side, and traffic exceeds treshhold in both sides, switch
+        IF TrafficEastWest = 0 | (I_TrafficEast > Svr_MinTrafficTreshold & I_TrafficWest > Svr_MinTrafficTreshold) THEN
+            eDominantDirection := DD_NorthSouth;
+            tSignalChanged := OPS.tAbsolute;
+            RETURN;
+        END_IF;
+        
+    // Check if East-West is dominant.
+    ELSIF (eDominantDirection = DD_EastWest) = FALSE & EastWestRatio >= NorthSouthRatio + Svr_DominanceTreshold THEN
+    
+        // If theres no cars in opposite side, and traffic exceeds treshhold in both sides, switch
+        IF TrafficNorthSouth = 0 | (I_TrafficNorth > Svr_MinTrafficTreshold & I_TrafficSouth > Svr_MinTrafficTreshold) THEN
+            eDominantDirection := DD_EastWest;
+            tSignalChanged := OPS.tAbsolute;
+            RETURN;
+        END_IF;
+    END_IF;
+    
+    // If one side has been waiting for a full cylce, switch direction. 
+    IF OPS.tAbsolute - tSignalChanged > Svr_CycleTime THEN
+        CASE eDominantDirection OF
+            
+        DD_NorthSouth:
+            IF TrafficEastWest > 0 THEN
+                eDominantDirection := DD_EastWest; 
+            END_IF;
+            
+        DD_EastWest:
+            IF TrafficNorthSouth > 0 THEN
+                eDominantDirection := DD_NorthSouth;
+            END_IF;
+            
+        END_CASE;
+        
+        tSignalChanged := OPS.tAbsolute;
+        RETURN;
+    END_IF;
+    
 END_FUNCTION
