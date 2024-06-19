@@ -28,7 +28,6 @@
 #include <CanTypes.h>
 #include "..\Class\StringInternal\StringDefs.h"
 #include <lsl_st_serial.h>
-#include "..\Class\Ram\Ram.h"
 
 #include "unit.h"
 #include "UserDef.h"

@@ -6,123 +6,126 @@
 			Name       = "RoadEast"
 			GUID       = "{40B4670C-2C2D-458C-B03A-5CC3D36F0860}"
 			Class      = "Road"
-			Position   = "(1950,780)"
+			Position   = "(870,510)"
 			Visualized = "true"
 			CyclicTime = "1200 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="IncomingTraffic"/>
-				<Client Name="I_Signal"/>
+				<Server Name="Svr_IncomingCars"/>
+				<Client Name="I_TrafficLight"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "RoadNorth"
 			GUID       = "{4C29B90A-FF2E-4539-BCF9-332DA20B9080}"
 			Class      = "Road"
-			Position   = "(1950,480)"
+			Position   = "(870,330)"
 			Visualized = "true"
 			CyclicTime = "1200 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="IncomingTraffic"/>
-				<Client Name="I_Signal"/>
+				<Server Name="Svr_IncomingCars"/>
+				<Client Name="I_TrafficLight"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "RoadSouth"
 			GUID       = "{F69CB57E-BCDE-4A7E-87BC-D93AE7A168D0}"
 			Class      = "Road"
-			Position   = "(1950,1080)"
+			Position   = "(870,690)"
 			Visualized = "true"
 			CyclicTime = "1200 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="IncomingTraffic"/>
-				<Client Name="I_Signal"/>
+				<Server Name="Svr_IncomingCars"/>
+				<Client Name="I_TrafficLight"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "RoadWest"
 			GUID       = "{2EDF9211-92BC-49C7-B861-B911E7460610}"
 			Class      = "Road"
-			Position   = "(1950,1380)"
+			Position   = "(870,870)"
 			Visualized = "true"
 			CyclicTime = "1200 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="IncomingTraffic"/>
-				<Client Name="I_Signal"/>
+				<Server Name="Svr_IncomingCars"/>
+				<Client Name="I_TrafficLight"/>
 			</Channels>
 		</Object>
 		<Object
-			Name       = "TrafficControl1"
+			Name       = "TrafficControl"
 			GUID       = "{1E4C65E9-AE89-4BBF-969D-C0383CE1F2CD}"
 			Class      = "TrafficControl"
-			Position   = "(450,840)"
+			Position   = "(1650,750)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="East"/>
-				<Server Name="North"/>
-				<Server Name="South"/>
-				<Server Name="West"/>
-				<Client Name="I_IncomingEast"/>
-				<Client Name="I_IncomingNorth"/>
-				<Client Name="I_IncomingSouth"/>
-				<Client Name="I_IncomingWest"/>
+				<Server Name="Svr_CycleTime" Value="12 sec"/>
+				<Server Name="Svr_DominanceTreshold" Value="0.15"/>
+				<Server Name="Svr_MinTrafficTreshold" Value="6"/>
+				<Client Name="I_TrafficEast"/>
+				<Client Name="I_TrafficNorth"/>
+				<Client Name="I_TrafficSouth"/>
+				<Client Name="I_TrafficWest"/>
+				<Client Name="Obj_TrafficLightEast"/>
+				<Client Name="Obj_TrafficLightNorth" Value="0"/>
+				<Client Name="Obj_TrafficLightSouth"/>
+				<Client Name="Obj_TrafficLightWest"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "TrafficLightEast"
 			GUID       = "{49E03A8E-01D7-42E5-874B-2072360B162C}"
 			Class      = "TrafficLight"
-			Position   = "(1140,720)"
+			Position   = "(60,1290)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="Light" Value="0"/>
-				<Client Name="I_StopSignal"/>
+				<Server Name="Svr_Light" Value="0"/>
+				<Server Name="Svr_SwitchDelay"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "TrafficLightNorth"
 			GUID       = "{8BBB55EC-8CFC-4E1E-AB5C-38B5313D1774}"
 			Class      = "TrafficLight"
-			Position   = "(1140,420)"
+			Position   = "(60,1050)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="Light" Value="0"/>
-				<Client Name="I_StopSignal"/>
+				<Server Name="Svr_Light" Value="0"/>
+				<Server Name="Svr_SwitchDelay"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "TrafficLightSouth"
 			GUID       = "{2E161661-0742-469E-86E7-B6E5EF4DFFCA}"
 			Class      = "TrafficLight"
-			Position   = "(1140,1020)"
+			Position   = "(60,1530)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="Light" Value="0"/>
-				<Client Name="I_StopSignal"/>
+				<Server Name="Svr_Light" Value="0"/>
+				<Server Name="Svr_SwitchDelay" Value="0"/>
 			</Channels>
 		</Object>
 		<Object
 			Name       = "TrafficLightWest"
 			GUID       = "{BBC36175-4766-439B-9A32-322D99F9EDE3}"
 			Class      = "TrafficLight"
-			Position   = "(1170,1320)"
+			Position   = "(60,1770)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
-				<Server Name="Light" Value="0"/>
-				<Client Name="I_StopSignal"/>
+				<Server Name="Svr_Light" Value="0"/>
+				<Server Name="Svr_SwitchDelay"/>
 			</Channels>
 		</Object>
 	</Components>
@@ -130,18 +133,18 @@
 	</Comments>
 	<!-- List of Connections in this network -->
 	<Connections>
-		<Connection Source="RoadSouth.I_Signal" Destination="TrafficLightSouth.Light" Vertices="(1950,1170),(1652,1170),"/>
-		<Connection Source="TrafficLightSouth.I_StopSignal" Destination="TrafficControl1.South" Vertices="(1140,1110),(928,1110),"/>
-		<Connection Source="RoadEast.I_Signal" Destination="TrafficLightEast.Light" Vertices="(1950,870),(1652,870),"/>
-		<Connection Source="RoadNorth.I_Signal" Destination="TrafficLightNorth.Light" Vertices="(1950,570),(1652,570),"/>
-		<Connection Source="RoadWest.I_Signal" Destination="TrafficLightWest.Light" Vertices="(1950,1470),(1682,1470),"/>
-		<Connection Source="TrafficLightNorth.I_StopSignal" Destination="TrafficControl1.North" Vertices="(1140,510),(990,510),(990,990),(928,990),"/>
-		<Connection Source="TrafficLightEast.I_StopSignal" Destination="TrafficControl1.East" Vertices="(1140,810),(1080,810),(1080,1050),(928,1050),"/>
-		<Connection Source="TrafficLightWest.I_StopSignal" Destination="TrafficControl1.West" Vertices="(1170,1410),(1080,1410),(1080,1170),(928,1170),"/>
-		<Connection Source="TrafficControl1.I_IncomingNorth" Destination="RoadNorth.IncomingTraffic" Vertices="(450,930),(390,930),(390,360),(2580,360),(2580,630),(2442,630),"/>
-		<Connection Source="TrafficControl1.I_IncomingEast" Destination="RoadEast.IncomingTraffic" Vertices="(450,990),(330,990),(330,300),(2640,300),(2640,930),(2442,930),"/>
-		<Connection Source="TrafficControl1.I_IncomingSouth" Destination="RoadSouth.IncomingTraffic" Vertices="(450,1050),(330,1050),(330,1830),(2640,1830),(2640,1230),(2442,1230),"/>
-		<Connection Source="TrafficControl1.I_IncomingWest" Destination="RoadWest.IncomingTraffic" Vertices="(450,1110),(390,1110),(390,1770),(2580,1770),(2580,1530),(2442,1530),"/>
+		<Connection Source="TrafficControl.I_TrafficWest" Destination="RoadWest.Svr_IncomingCars" Vertices="(1650,1020),(1362,1020),"/>
+		<Connection Source="TrafficControl.I_TrafficSouth" Destination="RoadSouth.Svr_IncomingCars" Vertices="(1650,960),(1470,960),(1470,840),(1362,840),"/>
+		<Connection Source="TrafficControl.I_TrafficEast" Destination="RoadEast.Svr_IncomingCars" Vertices="(1650,900),(1530,900),(1530,660),(1362,660),"/>
+		<Connection Source="TrafficControl.I_TrafficNorth" Destination="RoadNorth.Svr_IncomingCars" Vertices="(1650,840),(1590,840),(1590,480),(1362,480),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightNorth" Destination="TrafficLightNorth.ClassSvr" Vertices="(1650,1140),(572,1140),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightEast" Destination="TrafficLightEast.ClassSvr" Vertices="(1650,1200),(870,1200),(870,1380),(572,1380),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightWest" Destination="TrafficLightWest.ClassSvr" Vertices="(1650,1320),(990,1320),(990,1860),(572,1860),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightSouth" Destination="TrafficLightSouth.ClassSvr" Vertices="(1650,1260),(930,1260),(930,1620),(572,1620),"/>
+		<Connection Source="RoadNorth.I_TrafficLight" Destination="TrafficLightNorth.Svr_Light" Vertices="(870,420),(630,420),(630,1200),(572,1200),"/>
+		<Connection Source="RoadEast.I_TrafficLight" Destination="TrafficLightEast.Svr_Light" Vertices="(870,600),(690,600),(690,1440),(572,1440),"/>
+		<Connection Source="RoadSouth.I_TrafficLight" Destination="TrafficLightSouth.Svr_Light" Vertices="(870,780),(750,780),(750,1680),(572,1680),"/>
+		<Connection Source="RoadWest.I_TrafficLight" Destination="TrafficLightWest.Svr_Light" Vertices="(870,960),(810,960),(810,1920),(572,1920),"/>
 	</Connections>
 	<!-- Headerfiles -->
 	<Options>
