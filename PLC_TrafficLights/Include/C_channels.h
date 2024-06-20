@@ -252,6 +252,13 @@ typedef struct CltChCmd_RamFile
     RamFile *pCmd;
   } CltChCmd_RamFile;
 
+typedef struct CltChCmd_Road 
+  {
+    struct SvrChCmd_DINT *pCh;
+    DINT dData;
+    Road *pCmd;
+  } CltChCmd_Road;
+
 typedef struct CltChCmd_SafetyManager 
   {
     struct SvrChCmd_DINT *pCh;

@@ -181,6 +181,11 @@ TYPE
     dData : UDINT;
     pCmd : ^RamFile;
   END_STRUCT;
+  CltChCmd_Road : STRUCT
+    pCh : ^SvrChCmd_DINT;
+    dData : DINT;
+    pCmd : ^Road;
+  END_STRUCT;
   CltChCmd_SafetyManager : STRUCT
     pCh : ^SvrChCmd_DINT;
     dData : DINT;
