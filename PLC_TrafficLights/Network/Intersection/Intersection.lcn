@@ -8,7 +8,7 @@
 			Class      = "Road"
 			Position   = "(1260,1350)"
 			Visualized = "true"
-			CyclicTime = "1200 ms">
+			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
 				<Server Name="Svr_AverageWaitingTime"/>
@@ -24,7 +24,7 @@
 			Class      = "Road"
 			Position   = "(1260,990)"
 			Visualized = "true"
-			CyclicTime = "1200 ms">
+			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
 				<Server Name="Svr_AverageWaitingTime"/>
@@ -40,7 +40,7 @@
 			Class      = "Road"
 			Position   = "(1260,1710)"
 			Visualized = "true"
-			CyclicTime = "1200 ms">
+			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
 				<Server Name="Svr_AverageWaitingTime"/>
@@ -56,7 +56,7 @@
 			Class      = "Road"
 			Position   = "(1260,2070)"
 			Visualized = "true"
-			CyclicTime = "1200 ms">
+			CyclicTime = "100 ms">
 			<Channels>
 				<Server Name="ClassSvr"/>
 				<Server Name="Svr_AverageWaitingTime"/>
