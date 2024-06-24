@@ -25,7 +25,9 @@
 		<Server Name="Svr_AverageWaitingTimeSeconds" GUID="{3F86744F-E8DD-4B49-BCAA-EEEC8E38CF4A}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
 		<Server Name="Svr_BaseCycleTime" GUID="{12759AB7-CF04-4C00-A69A-873ADA8AEA6E}" Visualized="false" Initialize="true" DefValue="12 sec" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_CycleTimeVariable" GUID="{0B8E7F7F-A5D0-45AF-824E-8A1653C880A5}" Visualized="false" Initialize="true" DefValue="0.1" WriteProtected="false" Retentive="SRam"/>
+		<Server Name="Svr_EndlessMode" GUID="{2C5DFF2D-B70A-4FA5-A4FD-166D5C88DA11}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
 		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam"/>
+		<Client Name="Obj_Random" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadEast" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadNorth" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadSouth" Required="true" Internal="false"/>
@@ -37,7 +39,8 @@
 	</Channels>
 	<Separators>
 		<Clients>
-			<SepChn Position="4"/>
+			<SepChn Position="6"/>
+			<SepChn Position="1"/>
 		</Clients>
 	</Separators>
 </Class>
@@ -59,7 +62,9 @@ TrafficControl : CLASS
 	Svr_AverageWaitingTime 	: SvrCh_REAL;
 	Svr_AverageWaitingTimeSeconds 	: SvrCh_UDINT;
 	Svr_AverageWaitingTimeMinutes 	: SvrCh_UDINT;
+	Svr_EndlessMode 	: SvrCh_DINT;
   //Clients:
+	Obj_Random 	: CltChCmd_Random;
 	Obj_TrafficLightNorth 	: CltChCmd_TrafficLight;
 	Obj_TrafficLightEast 	: CltChCmd_TrafficLight;
 	Obj_TrafficLightSouth 	: CltChCmd_TrafficLight;
@@ -112,6 +117,13 @@ TrafficControl : CLASS
 	FUNCTION ReadInputs;
 	
 	FUNCTION WriteOutputs;
+	
+	FUNCTION AddTraffic;
+	
+	FUNCTION GetCarsRandom
+		VAR_OUTPUT
+			Cars 	: DINT;
+		END_VAR;
   //Tables:
 	FUNCTION @STD
 		VAR_OUTPUT
@@ -120,6 +132,7 @@ TrafficControl : CLASS
 	FUNCTION GLOBAL TAB @CT_;
 END_CLASS;
 
+#pragma usingLtd Random
 #pragma usingLtd Road
 #pragma usingLtd TrafficLight
 
@@ -131,7 +144,7 @@ FUNCTION GLOBAL TAB TrafficControl::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICCONTROL
 0$UINT, 0$UINT, (SIZEOF(::TrafficControl))$UINT, 
-7$UINT, 8$UINT, 0$UINT, 
+8$UINT, 9$UINT, 0$UINT, 
 TO_UDINT(444898770), "TrafficControl", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
@@ -142,7 +155,9 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::TrafficControl.Svr_AverageWaitingTime.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(843986990), "Svr_AverageWaitingTime", 
 (::TrafficControl.Svr_AverageWaitingTimeSeconds.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(3671713535), "Svr_AverageWaitingTimeSeconds", 
 (::TrafficControl.Svr_AverageWaitingTimeMinutes.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(1432659386), "Svr_AverageWaitingTimeMinutes", 
+(::TrafficControl.Svr_EndlessMode.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(157723976), "Svr_EndlessMode", 
 //Clients:
+(::TrafficControl.Obj_Random.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(1184818257), "Obj_Random", TO_UDINT(3871546707), "Random", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_TrafficLightNorth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(3478640126), "Obj_TrafficLightNorth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_TrafficLightEast.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(648973330), "Obj_TrafficLightEast", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_TrafficLightSouth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(1382584392), "Obj_TrafficLightSouth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
@@ -203,6 +218,13 @@ FUNCTION TrafficControl::@STD
 		ret_code	:= C_OUTOF_NEAR;
 		RETURN;
 	END_IF;
+	Svr_EndlessMode.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_EndlessMode.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
 
 END_FUNCTION
 
@@ -219,12 +241,14 @@ FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     VAR_OUTPUT
         state (EAX)    : UDINT;
     END_VAR
-    
-    // Read incoming traffic
+
     ReadInputs();
     
-    // Sets eDominantDirection 
     SetDominantDirection();
+    
+    IF Svr_EndlessMode THEN
+        AddTraffic();
+    END_IF;
     
     CASE eDominantDirection OF
     
@@ -249,12 +273,29 @@ END_FUNCTION
 //  Internally called methods
 //----------------------------------------------------------------------------------------------------
 
-
 FUNCTION TrafficControl::ReadInputs
+
     CarsNorth := Obj_RoadNorth.Svr_IncomingCars.Read();
     CarsEast := Obj_RoadEast.Svr_IncomingCars.Read();
     CarsSouth := Obj_RoadSouth.Svr_IncomingCars.Read();
     CarsWest := Obj_RoadWest.Svr_IncomingCars.Read();
+    
+END_FUNCTION
+
+FUNCTION TrafficControl::WriteOutputs
+    VAR
+        TotalAverageTimeSeconds : UDINT;
+    END_VAR
+
+    // Calculate the average between all the roads' averages. 
+    Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
+    + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
+    
+    // Calculate the average time a car spends waiting in traffic
+    TotalAverageTimeSeconds := TO_UDINT(Svr_AverageWaitingTime / 1000); 
+    Svr_AverageWaitingTimeMinutes := TO_UDINT(TotalAverageTimeSeconds / 60);
+    Svr_AverageWaitingTimeSeconds := TO_UDINT(TotalAverageTimeSeconds MOD 60);
+
 END_FUNCTION
 
 // Gets the dominant direction, contains all proiritisation logic. 
@@ -371,17 +412,31 @@ FUNCTION TrafficControl::SetSignals
         
 END_FUNCTION
 
-FUNCTION TrafficControl::WriteOutputs
+
+FUNCTION TrafficControl::AddTraffic
+    
+    Obj_RoadNorth.Svr_IncomingCars += GetCarsRandom();
+    Obj_RoadEast.Svr_IncomingCars += GetCarsRandom();
+    Obj_RoadSouth.Svr_IncomingCars += GetCarsRandom();
+    Obj_RoadWest.Svr_IncomingCars += GetCarsRandom();
+    
+END_FUNCTION
+
+FUNCTION TrafficControl::GetCarsRandom
+	VAR_OUTPUT
+		Cars 	: DINT;
+	END_VAR
     VAR
-        TotalAverageTimeSeconds : UDINT;
+        Rand        : DINT;
     END_VAR
 
-    // Calculate the average between all the roads' averages. 
-    Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
-    + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
-    
-    TotalAverageTimeSeconds := TO_UDINT(Svr_AverageWaitingTime / 1000); 
-    Svr_AverageWaitingTimeMinutes := TO_UDINT(TotalAverageTimeSeconds / 60);
-    Svr_AverageWaitingTimeSeconds := TO_UDINT(TotalAverageTimeSeconds MOD 60);
+    // 1% chance of 1-9 cars being added every cycle. 
+    Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=900);
+
+    IF Rand > 9 THEN
+        Cars := 0;
+    ELSE
+        Cars := Rand; 
+    END_IF;
 
 END_FUNCTION

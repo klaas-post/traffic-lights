@@ -3,6 +3,16 @@
 	<!-- List of Components in this network -->
 	<Components>
 		<Object
+			Name       = "Random"
+			GUID       = "{4E349C57-C610-4AE2-9482-91B21A9FB621}"
+			Class      = "Random"
+			Position   = "(1680,360)"
+			Visualized = "false">
+			<Channels>
+				<Server Name="ClassSvr"/>
+			</Channels>
+		</Object>
+		<Object
 			Name       = "RoadEast"
 			GUID       = "{40B4670C-2C2D-458C-B03A-5CC3D36F0860}"
 			Class      = "Road"
@@ -70,7 +80,7 @@
 			Name       = "TrafficControl"
 			GUID       = "{1E4C65E9-AE89-4BBF-969D-C0383CE1F2CD}"
 			Class      = "TrafficControl"
-			Position   = "(2280,480)"
+			Position   = "(2280,360)"
 			Visualized = "true"
 			CyclicTime = "100 ms">
 			<Channels>
@@ -80,7 +90,9 @@
 				<Server Name="Svr_AverageWaitingTimeSeconds"/>
 				<Server Name="Svr_BaseCycleTime" Value="20 sec"/>
 				<Server Name="Svr_CycleTimeVariable" Value="0.5"/>
+				<Server Name="Svr_EndlessMode"/>
 				<Server Name="Svr_MinTrafficTreshold" Value="6"/>
+				<Client Name="Obj_Random"/>
 				<Client Name="Obj_RoadEast"/>
 				<Client Name="Obj_RoadNorth"/>
 				<Client Name="Obj_RoadSouth"/>
@@ -152,14 +164,15 @@
 		<Connection Source="RoadEast.I_TrafficLight" Destination="TrafficLightEast.Svr_Light" Vertices="(1050,1440),(692,1440),"/>
 		<Connection Source="RoadSouth.I_TrafficLight" Destination="TrafficLightSouth.Svr_Light" Vertices="(1050,1800),(692,1800),"/>
 		<Connection Source="RoadWest.I_TrafficLight" Destination="TrafficLightWest.Svr_Light" Vertices="(1050,2160),(692,2160),"/>
-		<Connection Source="TrafficControl.Obj_RoadNorth" Destination="RoadNorth.ClassSvr" Vertices="(2280,870),(2010,870),(1950,930),(1950,1020),(1890,1080),(1818,1080),"/>
-		<Connection Source="TrafficControl.Obj_RoadEast" Destination="RoadEast.ClassSvr" Vertices="(2280,930),(2070,930),(2010,990),(2010,1380),(1950,1440),(1818,1440),"/>
-		<Connection Source="TrafficControl.Obj_RoadSouth" Destination="RoadSouth.ClassSvr" Vertices="(2280,990),(2130,990),(2070,1050),(2070,1740),(2010,1800),(1818,1800),"/>
-		<Connection Source="TrafficControl.Obj_RoadWest" Destination="RoadWest.ClassSvr" Vertices="(2280,1050),(2190,1050),(2130,1110),(2130,2100),(2070,2160),(1818,2160),"/>
-		<Connection Source="TrafficControl.Obj_TrafficLightNorth" Destination="TrafficLightNorth.ClassSvr" Vertices="(2280,570),(870,570),(810,630),(810,960),(750,1020),(692,1020),"/>
-		<Connection Source="TrafficControl.Obj_TrafficLightEast" Destination="TrafficLightEast.ClassSvr" Vertices="(2280,630),(930,630),(870,690),(870,1320),(810,1380),(692,1380),"/>
-		<Connection Source="TrafficControl.Obj_TrafficLightSouth" Destination="TrafficLightSouth.ClassSvr" Vertices="(2280,690),(990,690),(930,750),(930,1680),(870,1740),(692,1740),"/>
-		<Connection Source="TrafficControl.Obj_TrafficLightWest" Destination="TrafficLightWest.ClassSvr" Vertices="(2280,750),(1050,750),(990,810),(990,2040),(930,2100),(692,2100),"/>
+		<Connection Source="TrafficControl.Obj_RoadNorth" Destination="RoadNorth.ClassSvr" Vertices="(2280,870),(1980,870),(1950,900),(1950,1050),(1920,1080),(1818,1080),"/>
+		<Connection Source="TrafficControl.Obj_RoadEast" Destination="RoadEast.ClassSvr" Vertices="(2280,930),(2040,930),(2010,960),(2010,1410),(1980,1440),(1818,1440),"/>
+		<Connection Source="TrafficControl.Obj_RoadSouth" Destination="RoadSouth.ClassSvr" Vertices="(2280,990),(2100,990),(2070,1020),(2070,1770),(2040,1800),(1818,1800),"/>
+		<Connection Source="TrafficControl.Obj_RoadWest" Destination="RoadWest.ClassSvr" Vertices="(2280,1050),(2160,1050),(2130,1080),(2130,2130),(2100,2160),(1818,2160),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightNorth" Destination="TrafficLightNorth.ClassSvr" Vertices="(2280,570),(840,570),(810,600),(810,990),(780,1020),(692,1020),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightEast" Destination="TrafficLightEast.ClassSvr" Vertices="(2280,630),(900,630),(870,660),(870,1350),(840,1380),(692,1380),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightSouth" Destination="TrafficLightSouth.ClassSvr" Vertices="(2280,690),(960,690),(930,720),(930,1710),(900,1740),(692,1740),"/>
+		<Connection Source="TrafficControl.Obj_TrafficLightWest" Destination="TrafficLightWest.ClassSvr" Vertices="(2280,750),(1020,750),(990,780),(990,2070),(960,2100),(692,2100),"/>
+		<Connection Source="TrafficControl.Obj_Random" Destination="Random.ClassSvr" Vertices="(2280,450),(1980,450),"/>
 	</Connections>
 	<!-- Headerfiles -->
 	<Options>
