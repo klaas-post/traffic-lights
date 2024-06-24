@@ -170,7 +170,6 @@ END_FUNCTION
 //  Externally called methods
 //----------------------------------------------------------------------------------------------------
 
-
 // Sets the signal so the traffic light can turn to the right color.
 FUNCTION GLOBAL TrafficLight::SetSignal
 	VAR_INPUT
