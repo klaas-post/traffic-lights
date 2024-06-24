@@ -43,7 +43,7 @@
 		<File Path=".\source\interfaces\lsl_st_pll.h"/>
 		<File Path=".\Class\HwControl\HwControlLogging.h" Global="true"/>
 		<File Path=".\Source\interfaces\lsl_st_kernel.h"/>
-		<File Path=".\Source\interfaces\lsl_st_pci.h"/>
+		<File Path=".\source\interfaces\lsl_st_pci.h"/>
 		<File Path=".\Source\interfaces\lsl_st_safety.h"/>
 		<File Path=".\Source\interfaces\lsl_st_tcp_user.h" Global="true"/>
 		<File Path=".\Source\interfaces\lsl_st_varan.h" Global="true"/>

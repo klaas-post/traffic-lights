@@ -17,10 +17,12 @@
 	Automatic          = "false"
 	UpdateMode         = "Prescan"
 	SharedCommandTable = "true"
-	Objectsize         = "(732,120)">
+	Objectsize         = "(996,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{0DE37930-FFC9-4395-ACC2-3B7E6DCA5DA3}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_AverageWaitingTime" GUID="{6C025759-54EE-4A35-B405-CCB1D4CAE5C8}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
+		<Server Name="Svr_AverageWaitingTime" GUID="{6C025759-54EE-4A35-B405-CCB1D4CAE5C8}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
+		<Server Name="Svr_AverageWaitingTimeMinutes" GUID="{78D226DD-DEAA-49F3-904D-682FFB818F01}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
+		<Server Name="Svr_AverageWaitingTimeSeconds" GUID="{3F86744F-E8DD-4B49-BCAA-EEEC8E38CF4A}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
 		<Server Name="Svr_BaseCycleTime" GUID="{12759AB7-CF04-4C00-A69A-873ADA8AEA6E}" Visualized="false" Initialize="true" DefValue="12 sec" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_CycleTimeVariable" GUID="{0B8E7F7F-A5D0-45AF-824E-8A1653C880A5}" Visualized="false" Initialize="true" DefValue="0.1" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam"/>
@@ -55,6 +57,8 @@ TrafficControl : CLASS
 	Svr_MinTrafficTreshold 	: SvrCh_DINT;
 	Svr_CycleTimeVariable 	: SvrCh_REAL;
 	Svr_AverageWaitingTime 	: SvrCh_REAL;
+	Svr_AverageWaitingTimeSeconds 	: SvrCh_UDINT;
+	Svr_AverageWaitingTimeMinutes 	: SvrCh_UDINT;
   //Clients:
 	Obj_TrafficLightNorth 	: CltChCmd_TrafficLight;
 	Obj_TrafficLightEast 	: CltChCmd_TrafficLight;
@@ -106,6 +110,8 @@ TrafficControl : CLASS
 		END_VAR;
 	
 	FUNCTION ReadInputs;
+	
+	FUNCTION WriteOutputs;
   //Tables:
 	FUNCTION @STD
 		VAR_OUTPUT
@@ -125,7 +131,7 @@ FUNCTION GLOBAL TAB TrafficControl::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICCONTROL
 0$UINT, 0$UINT, (SIZEOF(::TrafficControl))$UINT, 
-5$UINT, 8$UINT, 0$UINT, 
+7$UINT, 8$UINT, 0$UINT, 
 TO_UDINT(444898770), "TrafficControl", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
@@ -134,6 +140,8 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::TrafficControl.Svr_MinTrafficTreshold.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(1229737423), "Svr_MinTrafficTreshold", 
 (::TrafficControl.Svr_CycleTimeVariable.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(2505978387), "Svr_CycleTimeVariable", 
 (::TrafficControl.Svr_AverageWaitingTime.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(843986990), "Svr_AverageWaitingTime", 
+(::TrafficControl.Svr_AverageWaitingTimeSeconds.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(3671713535), "Svr_AverageWaitingTimeSeconds", 
+(::TrafficControl.Svr_AverageWaitingTimeMinutes.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(1432659386), "Svr_AverageWaitingTimeMinutes", 
 //Clients:
 (::TrafficControl.Obj_TrafficLightNorth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(3478640126), "Obj_TrafficLightNorth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_TrafficLightEast.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(648973330), "Obj_TrafficLightEast", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
@@ -230,6 +238,8 @@ FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
             SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=FALSE, SouthStopSignal:=TRUE, WestStopSignal:=FALSE);
         
     END_CASE;
+    
+    WriteOutputs();
 
     state := READY;
 
@@ -245,11 +255,6 @@ FUNCTION TrafficControl::ReadInputs
     CarsEast := Obj_RoadEast.Svr_IncomingCars.Read();
     CarsSouth := Obj_RoadSouth.Svr_IncomingCars.Read();
     CarsWest := Obj_RoadWest.Svr_IncomingCars.Read();
-    
-    // Calculate the average between all the roads' averages. 
-    Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
-    + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
-
 END_FUNCTION
 
 // Gets the dominant direction, contains all proiritisation logic. 
@@ -364,4 +369,19 @@ FUNCTION TrafficControl::SetSignals
             Obj_TrafficLightWest.SetSignal(ShouldStop:=WestStopSignal);
         END_IF;
         
+END_FUNCTION
+
+FUNCTION TrafficControl::WriteOutputs
+    VAR
+        TotalAverageTimeSeconds : UDINT;
+    END_VAR
+
+    // Calculate the average between all the roads' averages. 
+    Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
+    + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
+    
+    TotalAverageTimeSeconds := TO_UDINT(Svr_AverageWaitingTime / 1000); 
+    Svr_AverageWaitingTimeMinutes := TO_UDINT(TotalAverageTimeSeconds / 60);
+    Svr_AverageWaitingTimeSeconds := TO_UDINT(TotalAverageTimeSeconds MOD 60);
+
 END_FUNCTION
