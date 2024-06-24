@@ -430,8 +430,8 @@ FUNCTION TrafficControl::GetCarsRandom
         Rand        : DINT;
     END_VAR
 
-    // 1% chance of 1-9 cars being added every cycle. 
-    Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=900);
+    // 1,111...% chance of 1-9 cars being added every cycle. 
+    Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=810);
 
     IF Rand > 9 THEN
         Cars := 0;
