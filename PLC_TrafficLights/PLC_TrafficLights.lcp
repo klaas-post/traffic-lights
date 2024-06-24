@@ -163,6 +163,7 @@
 		<File Path=".\Class\RamFile\RamFile.st"/>
 		<File Path=".\Class\TrafficControl\TrafficControl.st"/>
 		<File Path=".\Class\Road\Road.st"/>
+		<File Path=".\Class\Random\Random.st"/>
 	</ClassFiles>
 	<NetworkFiles>
 		<File Path=".\Network\HW_Network\HW_Network.lcn"/>

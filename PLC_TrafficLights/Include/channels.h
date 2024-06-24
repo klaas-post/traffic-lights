@@ -181,6 +181,11 @@ TYPE
     dData : UDINT;
     pCmd : ^RamFile;
   END_STRUCT;
+  CltChCmd_Random : STRUCT
+    pCh : ^SvrChCmd_DINT;
+    dData : DINT;
+    pCmd : ^Random;
+  END_STRUCT;
   CltChCmd_Road : STRUCT
     pCh : ^SvrChCmd_DINT;
     dData : DINT;
