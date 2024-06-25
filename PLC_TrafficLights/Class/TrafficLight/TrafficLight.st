@@ -29,9 +29,9 @@ TrafficLight : CLASS
 	TYPE
 	  _LightColor :  //! <Type Public="true" Name="_LightColor"/>
 	  (
-	    LC_Red:=0,
-	    LC_Yellow:=1,
-	    LC_Green:=2
+	    eRed:=0,
+	    eYellow:=1,
+	    eGreen:=2
 	  )$DINT;
 	END_TYPE
   //Servers:
@@ -144,21 +144,21 @@ FUNCTION VIRTUAL GLOBAL TrafficLight::CyWork
         CASE Svr_Light OF
 
         // Svr_Light is Green -> Yellow
-        LC_Green:  
+        eGreen:  
             IF bStopSignal THEN
-                Svr_Light := LC_Yellow;
+                Svr_Light := eYellow;
             END_IF;
 
         // Svr_Light is Yellow -> Red
-        LC_Yellow:
+        eYellow:
             IF (OPS.tAbsolute - tSignalChanged) > Svr_SwitchDelay THEN
-                Svr_Light := LC_Red;
+                Svr_Light := eRed;
             END_IF;
         
         // Svr_Light is Red -> Green
-        LC_Red:
+        eRed:
             IF bStopSignal = FALSE & (OPS.tAbsolute - tSignalChanged) > Svr_SwitchDelay THEN
-                Svr_Light := LC_Green;
+                Svr_Light := eGreen;
             END_IF;
         END_CASE;
 

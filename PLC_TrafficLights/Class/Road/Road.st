@@ -153,14 +153,14 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
         I_TrafficLight := I_TrafficLight.Read();
         
         // If the signal is red, exit function.
-        IF I_TrafficLight = TrafficLight::LC_Red THEN
+        IF I_TrafficLight = TrafficLight::eRed THEN
             TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
             state := READY;
             RETURN;
         END_IF;
         
         // If light is yellow, traffic might pass or might not.
-        IF I_TrafficLight = TrafficLight::LC_Yellow & OPS.tAbsolute MOD 3 = 0 THEN
+        IF I_TrafficLight = TrafficLight::eYellow & OPS.tAbsolute MOD 3 = 0 THEN
             TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
             RETURN;
         END_IF;

@@ -49,9 +49,9 @@ TrafficControl : CLASS
 	TYPE
 	  _DominantDirection :
 	  (
-	    DD_None:=0,
-	    DD_EastWest:=1,
-	    DD_NorthSouth:=2
+	    eNone:=0,
+	    eEastWest:=1,
+	    eNorthSouth:=2
 	  )$DINT;
 	END_TYPE
   //Servers:
@@ -252,13 +252,13 @@ FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     
     CASE eDominantDirection OF
     
-        DD_None:
+        eNone:
             SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=TRUE, SouthStopSignal:=TRUE, WestStopSignal:=TRUE);
             
-        DD_NorthSouth:
+        eNorthSouth:
             SetSignals(NorthStopSignal:=FALSE, EastStopSignal:=TRUE, SouthStopSignal:=FALSE, WestStopSignal:=TRUE);
         
-        DD_EastWest:
+        eEastWest:
             SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=FALSE, SouthStopSignal:=TRUE, WestStopSignal:=FALSE);
         
     END_CASE;
@@ -313,20 +313,20 @@ FUNCTION TrafficControl::SetDominantDirection
     
     // No traffic
     IF TotalTraffic = 0 THEN
-        eDominantDirection := DD_None;
+        eDominantDirection := eNone;
         RETURN;
     END_IF;
     
     // No traffic from the North or South.
     IF TrafficNorthSouth = 0 THEN
-        eDominantDirection := DD_EastWest;
+        eDominantDirection := eEastWest;
         tSignalChanged := OPS.tAbsolute;
         RETURN;
     END_IF;
     
     // No traffic from the East or West.
     IF TrafficEastWest = 0 THEN
-        eDominantDirection := DD_NorthSouth;
+        eDominantDirection := eNorthSouth;
         tSignalChanged := OPS.tAbsolute;
         RETURN;
     END_IF;
@@ -338,16 +338,16 @@ FUNCTION TrafficControl::SetDominantDirection
     // Cycle through directions. Each direction has a cycle time based on the ratio of traffic it contains.
     // This should balance the traffic from each direction over time.  
     CASE eDominantDirection OF
-        DD_NorthSouth:
+        eNorthSouth:
         IF OPS.tAbsolute - tSignalChanged > NorthSouthCycleTime THEN
             tSignalChanged := OPS.tAbsolute;
-            eDominantDirection := DD_EastWest;
+            eDominantDirection := eEastWest;
         END_IF;
         
-        DD_EastWest:
+        eEastWest:
         IF OPS.tAbsolute - tSignalChanged > EastWestCycleTime THEN
             tSignalChanged := OPS.tAbsolute;
-            eDominantDirection := DD_NorthSouth;
+            eDominantDirection := eNorthSouth;
         END_IF;
     END_CASE;
     

@@ -268,9 +268,9 @@ TrafficLight : CLASS_PUBLIC
 	TYPE
 	  _LightColor :
 	  (
-	    LC_Red:=0,
-	    LC_Yellow:=1,
-	    LC_Green:=2
+	    eRed:=0,
+	    eYellow:=1,
+	    eGreen:=2
 	  )$DINT;
 	END_TYPE
 END_CLASS;
