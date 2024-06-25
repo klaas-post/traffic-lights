@@ -1,6 +1,6 @@
 # Trafficlights Project
 
-This project is designed to simulate a crossroads with four traffic lights. It's part of the LASAL Sigmatech suite and serves as a training exercise created by Klaas Post to familiarize with the Sigmatech stack. 
+This project is designed to simulate a crossroads with four traffic lights. It's built using the LASAL Sigmatech suite and serves as a training exercise created by Klaas Post to familiarize with the Sigmatech stack. 
 
 ## Components
 1. **PLC Project**: Opened in Lasal Class 2, this contains the logic controlling the traffic lights.
