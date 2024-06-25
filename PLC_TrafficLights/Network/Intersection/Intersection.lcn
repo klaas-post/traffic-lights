@@ -92,6 +92,7 @@
 				<Server Name="Svr_CycleTimeVariable" Value="0.5"/>
 				<Server Name="Svr_EndlessMode"/>
 				<Server Name="Svr_MinTrafficTreshold" Value="6"/>
+				<Server Name="Svr_TrafficDensityFactor" Value="900"/>
 				<Client Name="Obj_Random"/>
 				<Client Name="Obj_RoadEast"/>
 				<Client Name="Obj_RoadNorth"/>

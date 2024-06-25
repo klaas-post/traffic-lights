@@ -27,6 +27,7 @@
 		<Server Name="Svr_CycleTimeVariable" GUID="{0B8E7F7F-A5D0-45AF-824E-8A1653C880A5}" Visualized="false" Initialize="true" DefValue="0.1" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_EndlessMode" GUID="{2C5DFF2D-B70A-4FA5-A4FD-166D5C88DA11}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
 		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam"/>
+		<Server Name="Svr_TrafficDensityFactor" GUID="{039E5C1A-719E-43D9-8610-CB5FC65EBC28}" Visualized="true" Remotely="true" Initialize="true" DefValue="900" WriteProtected="false" Retentive="SRam"/>
 		<Client Name="Obj_Random" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadEast" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadNorth" Required="true" Internal="false"/>
@@ -63,6 +64,7 @@ TrafficControl : CLASS
 	Svr_AverageWaitingTimeSeconds 	: SvrCh_UDINT;
 	Svr_AverageWaitingTimeMinutes 	: SvrCh_UDINT;
 	Svr_EndlessMode 	: SvrCh_DINT;
+	Svr_TrafficDensityFactor 	: SvrCh_DINT;
   //Clients:
 	Obj_Random 	: CltChCmd_Random;
 	Obj_TrafficLightNorth 	: CltChCmd_TrafficLight;
@@ -144,7 +146,7 @@ FUNCTION GLOBAL TAB TrafficControl::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICCONTROL
 0$UINT, 0$UINT, (SIZEOF(::TrafficControl))$UINT, 
-8$UINT, 9$UINT, 0$UINT, 
+9$UINT, 9$UINT, 0$UINT, 
 TO_UDINT(444898770), "TrafficControl", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
@@ -156,6 +158,7 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::TrafficControl.Svr_AverageWaitingTimeSeconds.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(3671713535), "Svr_AverageWaitingTimeSeconds", 
 (::TrafficControl.Svr_AverageWaitingTimeMinutes.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(1432659386), "Svr_AverageWaitingTimeMinutes", 
 (::TrafficControl.Svr_EndlessMode.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(157723976), "Svr_EndlessMode", 
+(::TrafficControl.Svr_TrafficDensityFactor.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(2904958223), "Svr_TrafficDensityFactor", 
 //Clients:
 (::TrafficControl.Obj_Random.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(1184818257), "Obj_Random", TO_UDINT(3871546707), "Random", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_TrafficLightNorth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(3478640126), "Obj_TrafficLightNorth", TO_UDINT(1430994866), "TrafficLight", 0$UINT, 0$UINT, 
@@ -220,6 +223,13 @@ FUNCTION TrafficControl::@STD
 	END_IF;
 	Svr_EndlessMode.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
 	IF Svr_EndlessMode.pMeth THEN
+		ret_code	:= C_OK;
+	ELSE
+		ret_code	:= C_OUTOF_NEAR;
+		RETURN;
+	END_IF;
+	Svr_TrafficDensityFactor.pMeth			:= StoreMethod( #M_RD_DIRECT(), #M_WR_DIRECT() );
+	IF Svr_TrafficDensityFactor.pMeth THEN
 		ret_code	:= C_OK;
 	ELSE
 		ret_code	:= C_OUTOF_NEAR;
@@ -433,7 +443,7 @@ FUNCTION TrafficControl::GetCarsRandom
     END_VAR
 
     // 9/860 chance of 1-9 cars being added every cycle. 
-    Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=860);
+    Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=Svr_TrafficDensityFactor);
 
     IF Rand > 9 THEN
         Cars := 0;
