@@ -291,7 +291,7 @@ FUNCTION TrafficControl::WriteOutputs
     Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
     + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
     
-    // Calculate the average time a car spends waiting in traffic
+    // Format the average time spent waiting in traffic in Minutes/Seconds 
     TotalAverageTimeSeconds := TO_UDINT(Svr_AverageWaitingTime / 1000); 
     Svr_AverageWaitingTimeMinutes := TO_UDINT(TotalAverageTimeSeconds / 60);
     Svr_AverageWaitingTimeSeconds := TO_UDINT(TotalAverageTimeSeconds MOD 60);
@@ -335,6 +335,8 @@ FUNCTION TrafficControl::SetDominantDirection
     NorthSouthCycleTime := CalculateCycleTime(TrafficA := CarsNorth, TrafficB := CarsSouth);
     EastWestCycleTime := CalculateCycleTime(TrafficA := CarsEast, TrafficB := CarsWest);
     
+    // Cycle through directions. Each direction has a cycle time based on the ratio of traffic it contains.
+    // This should balance the traffic from each direction over time.  
     CASE eDominantDirection OF
         DD_NorthSouth:
         IF OPS.tAbsolute - tSignalChanged > NorthSouthCycleTime THEN
@@ -430,7 +432,7 @@ FUNCTION TrafficControl::GetCarsRandom
         Rand        : DINT;
     END_VAR
 
-    // 1,047...% chance of 1-9 cars being added every cycle. 
+    // 9/860 chance of 1-9 cars being added every cycle. 
     Rand := Obj_Random.GetRandomNumber(Minimum:=1, Maximum:=860);
 
     IF Rand > 9 THEN

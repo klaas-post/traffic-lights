@@ -106,6 +106,8 @@ FUNCTION GLOBAL Random::GetRandomNumber
         Seed := 123;
     END_IF;
     
+    // This algorithm is a Linear congruential generator (LCG).
+    // Not safe for uses relating to security. 
     Seed := (MULTIPLIER * Seed + INCREMENT) MOD MODULUS;
     RandomNumber := Minimum + (TO_DINT(Seed) MOD (Maximum - Minimum + 1));
     
