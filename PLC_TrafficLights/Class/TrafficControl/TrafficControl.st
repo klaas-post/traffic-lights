@@ -126,6 +126,15 @@ TrafficControl : CLASS
 		VAR_OUTPUT
 			Cars 	: DINT;
 		END_VAR;
+	
+	FUNCTION GetExtraDelay
+		VAR_INPUT
+			CarsDirection1 	: DINT;
+			CarsDirection2 	: DINT;
+		END_VAR
+		VAR_OUTPUT
+			ExtraDelay 	: UDINT;
+		END_VAR;
   //Tables:
 	FUNCTION @STD
 		VAR_OUTPUT
@@ -313,8 +322,9 @@ FUNCTION TrafficControl::SetDominantDirection
     VAR
     	TrafficEastWest   : DINT;
         TrafficNorthSouth : DINT;
+        EastWestExtraDelay   : UDINT;
+        NorthSouthExtraDelay : UDINT;
     END_VAR
-
     
     // Calculate totals
     TrafficEastWest := CarsEast + CarsWest;
@@ -345,17 +355,21 @@ FUNCTION TrafficControl::SetDominantDirection
     NorthSouthCycleTime := CalculateCycleTime(TrafficA := CarsNorth, TrafficB := CarsSouth);
     EastWestCycleTime := CalculateCycleTime(TrafficA := CarsEast, TrafficB := CarsWest);
     
+    // Get extra delay times for cases there's only a few cars left to go. 
+    NorthSouthExtraDelay := GetExtraDelay(CarsNorth, CarsSouth);
+    EastWestExtraDelay := GetExtraDelay(CarsEast, CarsWest);
+    
     // Cycle through directions. Each direction has a cycle time based on the ratio of traffic it contains.
     // This should balance the traffic from each direction over time.  
     CASE eDominantDirection OF
         eNorthSouth:
-        IF OPS.tAbsolute - tSignalChanged > NorthSouthCycleTime THEN
+        IF OPS.tAbsolute - tSignalChanged > (NorthSouthCycleTime + NorthSouthExtraDelay) THEN
             tSignalChanged := OPS.tAbsolute;
             eDominantDirection := eEastWest;
         END_IF;
         
         eEastWest:
-        IF OPS.tAbsolute - tSignalChanged > EastWestCycleTime THEN
+        IF OPS.tAbsolute - tSignalChanged > (EastWestCycleTime + EastWestExtraDelay) THEN
             tSignalChanged := OPS.tAbsolute;
             eDominantDirection := eNorthSouth;
         END_IF;
@@ -450,5 +464,54 @@ FUNCTION TrafficControl::GetCarsRandom
     ELSE
         Cars := Rand; 
     END_IF;
+
+END_FUNCTION
+
+
+FUNCTION TrafficControl::GetExtraDelay
+	VAR_INPUT
+		CarsDirection1 	: DINT;
+		CarsDirection2 	: DINT;
+	END_VAR
+	VAR_OUTPUT
+		ExtraDelay 	: UDINT;
+	END_VAR
+    VAR
+    	Passingtime : UDINT;
+    END_VAR
+    
+    // If neither direction has traffic below treshold or at least one, there should be no extra delay.
+    IF (CarsDirection1 > Svr_MinTrafficTreshold | CarsDirection1 = 0)
+     & (CarsDirection2 > Svr_MinTrafficTreshold | CarsDirection2 = 0) 
+    THEN
+        ExtraDelay := 0;
+        RETURN;
+    END_IF;
+    
+    // Needs to be multiplied by the time it takes for a car to pass, so take that value from a road.
+    Passingtime := Obj_RoadNorth.Svr_PassingTime.Read();
+    
+    // If the direction with most traffic is below treshold, adjust delay to that.
+    IF CarsDirection1 > CarsDirection2 THEN
+        IF CarsDirection1 <= Svr_MinTrafficTreshold THEN
+            ExtraDelay := CarsDirection1$UDINT * Passingtime;
+            RETURN;
+        END_IF;
+        
+        // Direction with most traffic is above treshold, so adjust to direction with the least.
+        ExtraDelay := CarsDirection2$UDINT * Passingtime;
+        
+    ELSE
+        IF CarsDirection2 <= Svr_MinTrafficTreshold THEN
+            ExtraDelay := CarsDirection2$UDINT * Passingtime;
+            RETURN;
+        END_IF;
+        
+        // Direction with most traffic is above treshold, so adjust to direction with the least.
+        ExtraDelay := CarsDirection2$UDINT * Passingtime;
+    END_IF;
+     
+    // Directions have equal traffic, take the first. 
+    ExtraDelay := CarsDirection1$UDINT * Passingtime;
 
 END_FUNCTION
