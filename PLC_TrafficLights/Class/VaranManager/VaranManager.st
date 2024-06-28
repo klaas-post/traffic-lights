@@ -70,7 +70,7 @@
 	</Channels>
 	<Dependencies>
 		<Files>
-			<File Path=".\Source\interfaces\lsl_st_pci.h" Include="false"/>
+			<File Path=".\source\interfaces\lsl_st_pci.h" Include="false"/>
 			<File Path=".\Class\VaranManager\VaranManager.h" Include="true"/>
 			<File Path=".\Class\SafetyManager\SafetyManager.h" Include="true"/>
 			<File Path=".\Source\interfaces\lsl_st_kernel.h" Include="true"/>

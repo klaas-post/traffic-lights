@@ -3,7 +3,7 @@
 //{{LSL_DECLARATION
 #include "..\..\Class\DiasMasterMain\DiasMasterMain.h"
 #include "..\..\Class\HwControl\HwControl.h"
-#include "..\..\Source\interfaces\lsl_st_pci.h"
+#include "..\..\source\interfaces\lsl_st_pci.h"
 #include "..\..\Source\interfaces\lsl_st_kernel.h"
 
 (*!
@@ -52,7 +52,7 @@
 			<File Path=".\Class\DiasMasterC\MasterSettings.h" Include="false"/>
 			<File Path=".\Class\HwControl\HwControl.h" Include="true"/>
 			<File Path=".\Source\interfaces\lsl_st_cdias.h" Include="false"/>
-			<File Path=".\Source\interfaces\lsl_st_pci.h" Include="true"/>
+			<File Path=".\source\interfaces\lsl_st_pci.h" Include="true"/>
 			<File Path=".\Source\interfaces\lsl_st_kernel.h" Include="true"/>
 		</Files>
 	</Dependencies>

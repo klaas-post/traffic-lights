@@ -24,7 +24,7 @@
 		<Server Name="Svr_IncomingCars" GUID="{C0CECF47-6DEA-4296-B811-DBAF2D9D0E9F}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
 		<Server Name="Svr_PassingTime" GUID="{47ACCEB2-7694-41B8-BF42-2D13B356BA57}" Visualized="false" Initialize="true" DefValue="1200" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_TotalCarsPassed" GUID="{E4E8C96C-F8D1-4104-9612-CF2FCA6B2A92}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Client Name="I_TrafficLight" Required="true" Internal="false"/>
+		<Client Name="I_TrafficLight" Required="false" Internal="false"/>
 	</Channels>
 	<RevDoku>
 		<Owner Company="Eqraft"/>
@@ -78,7 +78,7 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::Road.Svr_AverageWaitingTime.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000000000$UINT, TO_UDINT(843986990), "Svr_AverageWaitingTime", 
 (::Road.Svr_PassingTime.pMeth)$UINT, _CH_SVR$UINT, 2#0000000000001000$UINT, TO_UDINT(1595934702), "Svr_PassingTime", 
 //Clients:
-(::Road.I_TrafficLight.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000010$UINT, TO_UDINT(1043360495), "I_TrafficLight", 
+(::Road.I_TrafficLight.pCh)$UINT, _CH_CLT_DATA$UINT, 2#0000000000000000$UINT, TO_UDINT(1043360495), "I_TrafficLight", 
 END_FUNCTION
 
 
@@ -132,6 +132,7 @@ END_FUNCTION
 //  Standard class methods
 //----------------------------------------------------------------------------------------------------
 
+// Standard Cywork, runs every set amount of time. 
 FUNCTION VIRTUAL GLOBAL Road::CyWork
 	VAR_INPUT
 		EAX 	: UDINT;
@@ -144,7 +145,6 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
     
         // If there's no cars waiting, exit function.
         IF Svr_IncomingCars < 1 THEN
-            tLastCarPassed := OPS.tAbsolute;
             state := READY;
             RETURN;
         END_IF;
@@ -154,14 +154,14 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
         
         // If the signal is red, exit function.
         IF I_TrafficLight = TrafficLight::eRed THEN
-            TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
+            TotalWaitingTime += Svr_PassingTime;
             state := READY;
             RETURN;
         END_IF;
         
         // If light is yellow, traffic might pass or might not.
-        IF I_TrafficLight = TrafficLight::eYellow & OPS.tAbsolute MOD 3 = 0 THEN
-            TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
+        IF I_TrafficLight = TrafficLight::eYellow & OPS.tAbsolute MOD 5 = 0 THEN
+            TotalWaitingTime += Svr_PassingTime;
             RETURN;
         END_IF;
         
@@ -174,9 +174,10 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
     
     IF Svr_TotalCarsPassed > 0 THEN
         Svr_AverageWaitingTime := TotalWaitingTime / Svr_TotalCarsPassed;
+    ELSE
+        Svr_AverageWaitingTime := 0;
     END_IF;
     
 	state := READY;
 
 END_FUNCTION
-

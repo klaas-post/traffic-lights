@@ -80,7 +80,7 @@
 	<Dependencies>
 		<Files>
 			<File Path=".\Class\VaranManager_Base\VaranManager_Base.h" Include="false"/>
-			<File Path=".\Source\interfaces\lsl_st_pci.h" Include="false"/>
+			<File Path=".\source\interfaces\lsl_st_pci.h" Include="false"/>
 			<File Path=".\Class\HwControl\HwControl.h" Include="true"/>
 			<File Path=".\Source\interfaces\lsl_st_hardwaretree.h" Include="true"/>
 		</Files>
