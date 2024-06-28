@@ -133,6 +133,7 @@ END_FUNCTION
 //  Standard class methods
 //----------------------------------------------------------------------------------------------------
 
+// Standard Cywork, runs every set amount of time. 
 FUNCTION VIRTUAL GLOBAL TrafficLight::CyWork
 	VAR_INPUT
 		EAX 	: UDINT;

@@ -132,6 +132,7 @@ END_FUNCTION
 //  Standard class methods
 //----------------------------------------------------------------------------------------------------
 
+// Standard Cywork, runs every set amount of time. 
 FUNCTION VIRTUAL GLOBAL Road::CyWork
 	VAR_INPUT
 		EAX 	: UDINT;
@@ -144,7 +145,6 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
     
         // If there's no cars waiting, exit function.
         IF Svr_IncomingCars < 1 THEN
-            tLastCarPassed := OPS.tAbsolute;
             state := READY;
             RETURN;
         END_IF;
@@ -154,14 +154,14 @@ FUNCTION VIRTUAL GLOBAL Road::CyWork
         
         // If the signal is red, exit function.
         IF I_TrafficLight = TrafficLight::eRed THEN
-            TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
+            TotalWaitingTime += Svr_PassingTime;
             state := READY;
             RETURN;
         END_IF;
         
         // If light is yellow, traffic might pass or might not.
-        IF I_TrafficLight = TrafficLight::eYellow & OPS.tAbsolute MOD 3 = 0 THEN
-            TotalWaitingTime += OPS.tAbsolute - tLastCarPassed;
+        IF I_TrafficLight = TrafficLight::eYellow & OPS.tAbsolute MOD 5 = 0 THEN
+            TotalWaitingTime += Svr_PassingTime;
             RETURN;
         END_IF;
         

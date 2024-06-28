@@ -9,7 +9,7 @@
 	GUID               = "{14BB889B-FF97-4083-85DD-5543A69B92CD}"
 	RealtimeTask       = "false"
 	CyclicTask         = "true"
-	DefCyclictime      = "3 sec"
+	DefCyclictime      = "100 ms"
 	BackgroundTask     = "false"
 	Sigmatek           = "false"
 	OSInterface        = "false"
@@ -253,9 +253,10 @@ END_FUNCTION
 //  Standard class methods
 //----------------------------------------------------------------------------------------------------
 
+// Standard Cywork, runs every set amount of time. 
 FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     VAR_INPUT
-        EAX     : UDINT;
+        EAX            : UDINT;
     END_VAR
     VAR_OUTPUT
         state (EAX)    : UDINT;
@@ -265,20 +266,22 @@ FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     
     SetDominantDirection();
     
+    // Enables traffic simulation where random cars are added. 
     IF Svr_EndlessMode THEN
         AddTraffic();
     END_IF;
     
+    // Direction switching. 
     CASE eDominantDirection OF
     
         eNone:
-            SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=TRUE, SouthStopSignal:=TRUE, WestStopSignal:=TRUE);
+            SetSignals(TRUE, TRUE, TRUE, TRUE); // All red
             
         eNorthSouth:
-            SetSignals(NorthStopSignal:=FALSE, EastStopSignal:=TRUE, SouthStopSignal:=FALSE, WestStopSignal:=TRUE);
+            SetSignals(FALSE, TRUE, FALSE, TRUE); // North & South to Green, East & West to Red. 
         
         eEastWest:
-            SetSignals(NorthStopSignal:=TRUE, EastStopSignal:=FALSE, SouthStopSignal:=TRUE, WestStopSignal:=FALSE);
+            SetSignals(TRUE, FALSE, TRUE, FALSE); // North & South to Red, East & West to Green.
         
     END_CASE;
     
@@ -292,6 +295,7 @@ END_FUNCTION
 //  Internally called methods
 //----------------------------------------------------------------------------------------------------
 
+// Read the inputs to get the amount of cars incoming.
 FUNCTION TrafficControl::ReadInputs
 
     CarsNorth := Obj_RoadNorth.Svr_IncomingCars.Read();
@@ -301,6 +305,7 @@ FUNCTION TrafficControl::ReadInputs
     
 END_FUNCTION
 
+// Writes the output to the servers so the HMI can show them.
 FUNCTION TrafficControl::WriteOutputs
     VAR
         TotalAverageTimeSeconds : UDINT;
@@ -310,20 +315,55 @@ FUNCTION TrafficControl::WriteOutputs
     Svr_AverageWaitingTime := (Obj_RoadNorth.Svr_AverageWaitingTime + Obj_RoadEast.Svr_AverageWaitingTime 
     + Obj_RoadSouth.Svr_AverageWaitingTime + Obj_RoadWest.Svr_AverageWaitingTime) / 4;
     
-    // Format the average time spent waiting in traffic in Minutes/Seconds 
+    // Format the average time spent waiting in traffic in Minutes/Seconds.
     TotalAverageTimeSeconds := TO_UDINT(Svr_AverageWaitingTime / 1000); 
     Svr_AverageWaitingTimeMinutes := TO_UDINT(TotalAverageTimeSeconds / 60);
     Svr_AverageWaitingTimeSeconds := TO_UDINT(TotalAverageTimeSeconds MOD 60);
 
 END_FUNCTION
 
+// Set the signals so Traffic lights know when to switch to green or to yellow then red.
+// Only sets the light to green if there's cars incoming. 
+FUNCTION TrafficControl::SetSignals
+	VAR_INPUT
+		NorthStopSignal 	: BOOL;
+		EastStopSignal 	    : BOOL;
+		SouthStopSignal 	: BOOL;
+		WestStopSignal 	    : BOOL;
+	END_VAR
+    
+        IF NorthStopSignal = FALSE & CarsNorth = 0 THEN
+            Obj_TrafficLightNorth.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightNorth.SetSignal(ShouldStop:=NorthStopSignal);
+        END_IF;
+        
+        IF EastStopSignal = FALSE & CarsEast = 0 THEN
+            Obj_TrafficLightEast.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightEast.SetSignal(ShouldStop:=EastStopSignal);
+        END_IF;
+        
+        IF SouthStopSignal = FALSE & CarsSouth = 0 THEN
+            Obj_TrafficLightSouth.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightSouth.SetSignal(ShouldStop:=SouthStopSignal);
+        END_IF;
+        
+        IF WestStopSignal = FALSE & CarsWest = 0 THEN
+            Obj_TrafficLightWest.SetSignal(ShouldStop:=TRUE);
+        ELSE
+            Obj_TrafficLightWest.SetSignal(ShouldStop:=WestStopSignal);
+        END_IF;
+        
+END_FUNCTION
 // Gets the dominant direction, contains all proiritisation logic. 
 FUNCTION TrafficControl::SetDominantDirection
     VAR
-    	TrafficEastWest   : DINT;
-        TrafficNorthSouth : DINT;
-        EastWestExtraDelay   : UDINT;
-        NorthSouthExtraDelay : UDINT;
+    	TrafficEastWest         : DINT;
+        TrafficNorthSouth       : DINT;
+        EastWestExtraDelay      : UDINT;
+        NorthSouthExtraDelay    : UDINT;
     END_VAR
     
     // Calculate totals
@@ -402,43 +442,7 @@ FUNCTION TrafficControl::CalculateCycleTime
 
 END_FUNCTION
 
-// Set the signals so Traffic lights know when to switch to green or to yellow then red.
-FUNCTION TrafficControl::SetSignals
-	VAR_INPUT
-		NorthStopSignal 	: BOOL;
-		EastStopSignal 	    : BOOL;
-		SouthStopSignal 	: BOOL;
-		WestStopSignal 	    : BOOL;
-	END_VAR
-    
-        // Don't change light to green if there's no cars even if direction has right of way.
-        IF NorthStopSignal = FALSE & CarsNorth = 0 THEN
-            Obj_TrafficLightNorth.SetSignal(ShouldStop:=TRUE);
-        ELSE
-            Obj_TrafficLightNorth.SetSignal(ShouldStop:=NorthStopSignal);
-        END_IF;
-        
-        IF EastStopSignal = FALSE & CarsEast = 0 THEN
-            Obj_TrafficLightEast.SetSignal(ShouldStop:=TRUE);
-        ELSE
-            Obj_TrafficLightEast.SetSignal(ShouldStop:=EastStopSignal);
-        END_IF;
-        
-        IF SouthStopSignal = FALSE & CarsSouth = 0 THEN
-            Obj_TrafficLightSouth.SetSignal(ShouldStop:=TRUE);
-        ELSE
-            Obj_TrafficLightSouth.SetSignal(ShouldStop:=SouthStopSignal);
-        END_IF;
-        
-        IF WestStopSignal = FALSE & CarsWest = 0 THEN
-            Obj_TrafficLightWest.SetSignal(ShouldStop:=TRUE);
-        ELSE
-            Obj_TrafficLightWest.SetSignal(ShouldStop:=WestStopSignal);
-        END_IF;
-        
-END_FUNCTION
-
-
+// Adds traffic randomly. 
 FUNCTION TrafficControl::AddTraffic
     
     Obj_RoadNorth.Svr_IncomingCars += GetCarsRandom();
@@ -448,12 +452,13 @@ FUNCTION TrafficControl::AddTraffic
     
 END_FUNCTION
 
+// Small chance to return a number of cars.
 FUNCTION TrafficControl::GetCarsRandom
 	VAR_OUTPUT
-		Cars 	: DINT;
+		Cars    : DINT;
 	END_VAR
     VAR
-        Rand        : DINT;
+        Rand    : DINT;
     END_VAR
 
     // 9/860 chance of 1-9 cars being added every cycle. 
@@ -467,7 +472,7 @@ FUNCTION TrafficControl::GetCarsRandom
 
 END_FUNCTION
 
-
+// Gets an extra delay in case there's only a few cars left to go. 
 FUNCTION TrafficControl::GetExtraDelay
 	VAR_INPUT
 		CarsDirection1 	: DINT;
