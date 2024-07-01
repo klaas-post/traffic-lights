@@ -20,10 +20,34 @@
 	Objectsize         = "(752,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{39167C79-0530-4A1E-BF4F-A9DF15F7CA3C}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_AverageWaitingTime" GUID="{A51146D1-F663-469E-9B53-69CE114E98D1}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_IncomingCars" GUID="{C0CECF47-6DEA-4296-B811-DBAF2D9D0E9F}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
+		<Server
+			Name           = "Svr_AverageWaitingTime"
+			GUID           = "{A51146D1-F663-469E-9B53-69CE114E98D1}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "true"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
+		<Server
+			Name           = "Svr_IncomingCars"
+			GUID           = "{C0CECF47-6DEA-4296-B811-DBAF2D9D0E9F}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "false"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true" WriteProtected="false"/>
+		</Server>
 		<Server Name="Svr_PassingTime" GUID="{47ACCEB2-7694-41B8-BF42-2D13B356BA57}" Visualized="false" Initialize="true" DefValue="1200" WriteProtected="false" Retentive="SRam"/>
-		<Server Name="Svr_TotalCarsPassed" GUID="{E4E8C96C-F8D1-4104-9612-CF2FCA6B2A92}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
+		<Server
+			Name           = "Svr_TotalCarsPassed"
+			GUID           = "{E4E8C96C-F8D1-4104-9612-CF2FCA6B2A92}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "true"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
 		<Client Name="I_TrafficLight" Required="false" Internal="false"/>
 	</Channels>
 	<RevDoku>

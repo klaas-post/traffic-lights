@@ -20,14 +20,56 @@
 	Objectsize         = "(996,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{0DE37930-FFC9-4395-ACC2-3B7E6DCA5DA3}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_AverageWaitingTime" GUID="{6C025759-54EE-4A35-B405-CCB1D4CAE5C8}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_AverageWaitingTimeMinutes" GUID="{78D226DD-DEAA-49F3-904D-682FFB818F01}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_AverageWaitingTimeSeconds" GUID="{3F86744F-E8DD-4B49-BCAA-EEEC8E38CF4A}" Visualized="true" Initialize="false" WriteProtected="true" Retentive="false"/>
+		<Server
+			Name           = "Svr_AverageWaitingTime"
+			GUID           = "{6C025759-54EE-4A35-B405-CCB1D4CAE5C8}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "true"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
+		<Server
+			Name           = "Svr_AverageWaitingTimeMinutes"
+			GUID           = "{78D226DD-DEAA-49F3-904D-682FFB818F01}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "true"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
+		<Server
+			Name           = "Svr_AverageWaitingTimeSeconds"
+			GUID           = "{3F86744F-E8DD-4B49-BCAA-EEEC8E38CF4A}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "true"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
 		<Server Name="Svr_BaseCycleTime" GUID="{12759AB7-CF04-4C00-A69A-873ADA8AEA6E}" Visualized="false" Initialize="true" DefValue="12 sec" WriteProtected="false" Retentive="SRam"/>
 		<Server Name="Svr_CycleTimeVariable" GUID="{0B8E7F7F-A5D0-45AF-824E-8A1653C880A5}" Visualized="false" Initialize="true" DefValue="0.1" WriteProtected="false" Retentive="SRam"/>
-		<Server Name="Svr_EndlessMode" GUID="{2C5DFF2D-B70A-4FA5-A4FD-166D5C88DA11}" Visualized="true" Initialize="false" WriteProtected="false" Retentive="false"/>
+		<Server
+			Name           = "Svr_EndlessMode"
+			GUID           = "{2C5DFF2D-B70A-4FA5-A4FD-166D5C88DA11}"
+			Visualized     = "true"
+			Initialize     = "false"
+			WriteProtected = "false"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true" WriteProtected="false"/>
+		</Server>
 		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam"/>
-		<Server Name="Svr_TrafficDensityFactor" GUID="{039E5C1A-719E-43D9-8610-CB5FC65EBC28}" Visualized="true" Remotely="true" Initialize="true" DefValue="900" WriteProtected="false" Retentive="SRam"/>
+		<Server
+			Name           = "Svr_TrafficDensityFactor"
+			GUID           = "{039E5C1A-719E-43D9-8610-CB5FC65EBC28}"
+			Visualized     = "true"
+			Remotely       = "true"
+			Initialize     = "true"
+			DefValue       = "900"
+			WriteProtected = "false"
+			Retentive      = "SRam">
+			<OPCSettingsDefault Visible="true" WriteProtected="false"/>
+		</Server>
 		<Client Name="Obj_Random" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadEast" Required="true" Internal="false"/>
 		<Client Name="Obj_RoadNorth" Required="true" Internal="false"/>
@@ -357,6 +399,7 @@ FUNCTION TrafficControl::SetSignals
         END_IF;
         
 END_FUNCTION
+
 // Gets the dominant direction, contains all proiritisation logic. 
 FUNCTION TrafficControl::SetDominantDirection
     VAR

@@ -5,7 +5,8 @@
 	OnlineConnection   = "PLC"
 	SolutionType       = "Large"
 	WriteSrvListOnSave = "true"
-	CLASSType          = "true">
+	CLASSType          = "true"
+	OPCSettings        = "true">
 	<OnlineConnectionInfo>
 		<TCPIP ConfigName="PLC" BUS="3" Password="" IP="10.195.1.52" PORT="1954" SomeFlags="0" PLCID="" Repeater="0" SSLTLS="0" Favorite="0"/>
 	</OnlineConnectionInfo>
