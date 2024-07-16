@@ -20,7 +20,16 @@
 	Objectsize         = "(496,120)">
 	<Channels>
 		<Server Name="ClassSvr" GUID="{D43DBC21-BCC5-4325-A3B3-DB1B224D469E}" Visualized="false" Initialize="false" WriteProtected="true" Retentive="false"/>
-		<Server Name="Svr_Light" GUID="{AFF77109-628C-42B4-889E-A62D17FCCE65}" Visualized="true" Initialize="true" DefValue="0" WriteProtected="false" Retentive="false"/>
+		<Server
+			Name           = "Svr_Light"
+			GUID           = "{AFF77109-628C-42B4-889E-A62D17FCCE65}"
+			Visualized     = "true"
+			Initialize     = "true"
+			DefValue       = "0"
+			WriteProtected = "false"
+			Retentive      = "false">
+			<OPCSettingsDefault Visible="true"/>
+		</Server>
 		<Server Name="Svr_SwitchDelay" GUID="{548ED515-C36E-46D4-938F-34B1CC3C2576}" Visualized="false" Initialize="true" DefValue="1500" WriteProtected="false" Retentive="SRam"/>
 	</Channels>
 </Class>

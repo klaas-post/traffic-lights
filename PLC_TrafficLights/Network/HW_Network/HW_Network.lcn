@@ -110,16 +110,36 @@
 				<Server Name="Input7"/>
 				<Server Name="Input8"/>
 				<Server Name="InputByte"/>
-				<Server Name="LEDControl" Value="0"/>
-				<Server Name="Output1"/>
-				<Server Name="Output2"/>
-				<Server Name="Output3"/>
-				<Server Name="Output4"/>
-				<Server Name="Output5"/>
-				<Server Name="Output6"/>
-				<Server Name="Output7"/>
-				<Server Name="Output8"/>
-				<Server Name="OutputByte"/>
+				<Server Name="LEDControl" Value="0">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output1">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output2">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output3">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output4">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output5">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output6">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output7">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Output8">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="OutputByte">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="RetryCounter"/>
 				<Server Name="SerialNo"/>
 				<Server Name="VoltageOk"/>
@@ -230,7 +250,9 @@
 						</Section>
 					</AdditionalData>
 				</Server>
-				<Server Name="DiasMaster"/>
+				<Server Name="DiasMaster">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="SafetyState"/>
 				<Server Name="State"/>
 				<Client Name="InterfaceNo" Value="1"/>
@@ -357,9 +379,15 @@
 				<Server Name="DesignerPrjRev"/>
 				<Server Name="DeviceID"/>
 				<Server Name="ErrorState"/>
-				<Server Name="FastUnsafeInputs"/>
-				<Server Name="FastUnsafeOutputs"/>
-				<Server Name="FCN_Command"/>
+				<Server Name="FastUnsafeInputs">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="FastUnsafeOutputs">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="FCN_Command">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="FCN_HostSafetyNumber"/>
 				<Server Name="FCN_StateMachine"/>
 				<Server Name="FirmwareVersion"/>
@@ -368,7 +396,9 @@
 				<Server Name="HGWOut"/>
 				<Server Name="HwCRC"/>
 				<Server Name="HwVersion"/>
-				<Server Name="QuitComError"/>
+				<Server Name="QuitComError">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="RetryCounter"/>
 				<Server Name="RunState"/>
 				<Server Name="SafetyNumber"/>
@@ -664,9 +694,13 @@
 				<Server Name="FirmwareVersion"/>
 				<Server Name="InterfaceState"/>
 				<Server Name="IsoRdTaskDuration"/>
-				<Server Name="IsoRdTaskMaxDuration"/>
+				<Server Name="IsoRdTaskMaxDuration">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="IsoWrTaskDuration"/>
-				<Server Name="IsoWrTaskMaxDuration"/>
+				<Server Name="IsoWrTaskMaxDuration">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="ManagerOptionBits"/>
 				<Server Name="ManagerProtocolVersion"/>
 				<Server Name="RetryCounter"/>
@@ -748,7 +782,9 @@
 				<Server Name="ClassState"/>
 				<Server Name="DeviceID"/>
 				<Server Name="HwVersion"/>
-				<Server Name="QuitComError"/>
+				<Server Name="QuitComError">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="RetryCounteruC1"/>
 				<Server Name="RetryCounteruC2"/>
 				<Server Name="Safe_Input1"/>
@@ -762,8 +798,12 @@
 				<Server Name="SafeIOError"/>
 				<Server Name="SafetyNumber"/>
 				<Server Name="SerialNo"/>
-				<Server Name="Unsafe_Output1"/>
-				<Server Name="Unsafe_Output2"/>
+				<Server Name="Unsafe_Output1">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output2">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Client Name="Place" Value="1"/>
 				<Client Name="Required" Value="1"/>
 				<Client Name="SdiasSafetyIn"/>
@@ -869,7 +909,9 @@
 				<Server Name="ClassState"/>
 				<Server Name="DeviceID"/>
 				<Server Name="HwVersion"/>
-				<Server Name="QuitComError"/>
+				<Server Name="QuitComError">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="RetryCounteruC1"/>
 				<Server Name="RetryCounteruC2"/>
 				<Server Name="Safe_Output1"/>
@@ -883,14 +925,30 @@
 				<Server Name="SafeIOError"/>
 				<Server Name="SafetyNumber"/>
 				<Server Name="SerialNo"/>
-				<Server Name="Unsafe_Output1"/>
-				<Server Name="Unsafe_Output2"/>
-				<Server Name="Unsafe_Output3"/>
-				<Server Name="Unsafe_Output4"/>
-				<Server Name="Unsafe_Output5"/>
-				<Server Name="Unsafe_Output6"/>
-				<Server Name="Unsafe_Output7"/>
-				<Server Name="Unsafe_Output8"/>
+				<Server Name="Unsafe_Output1">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output2">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output3">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output4">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output5">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output6">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output7">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Unsafe_Output8">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Client Name="Place" Value="0"/>
 				<Client Name="Required" Value="1"/>
 				<Client Name="SdiasSafetyIn"/>
@@ -998,15 +1056,27 @@
 				<Server Name="AsyVaranTime"/>
 				<Server Name="Control"/>
 				<Server Name="IsoVaranTime"/>
-				<Server Name="IsoVaranTimeMax"/>
+				<Server Name="IsoVaranTimeMax">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="ManagerOn"/>
 				<Server Name="ManagerProtocolVersion"/>
-				<Server Name="Max_RtCallTime"/>
-				<Server Name="Max_RtTime"/>
-				<Server Name="Min_RtCallTime"/>
-				<Server Name="Min_RtTime"/>
+				<Server Name="Max_RtCallTime">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Max_RtTime">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Min_RtCallTime">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
+				<Server Name="Min_RtTime">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="Release"/>
-				<Server Name="RetryCounter"/>
+				<Server Name="RetryCounter">
+					<OPCSettings WriteProtected="false"/>
+				</Server>
 				<Server Name="State"/>
 				<Server Name="SuperiorSystemOK"/>
 				<Server Name="VaranOut_1"/>

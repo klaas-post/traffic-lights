@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Config Version="1.1">
+	<Release>
+		<ReleasePath Path="C:\OPCUA\"/>
+	</Release>
+	<DataSet>
+		<DataElement Hostname="RoadEast_Svr_AverageWaitingTime" Type="FLOAT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadEast.Svr_AverageWaitingTime"/>
+		<DataElement Hostname="RoadEast_Svr_IncomingCars" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadEast.Svr_IncomingCars"/>
+		<DataElement Hostname="RoadEast_Svr_TotalCarsPassed" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadEast.Svr_TotalCarsPassed"/>
+		<DataElement Hostname="RoadNorth_Svr_AverageWaitingTime" Type="FLOAT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadNorth.Svr_AverageWaitingTime"/>
+		<DataElement Hostname="RoadNorth_Svr_IncomingCars" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadNorth.Svr_IncomingCars"/>
+		<DataElement Hostname="RoadNorth_Svr_TotalCarsPassed" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadNorth.Svr_TotalCarsPassed"/>
+		<DataElement Hostname="RoadSouth_Svr_AverageWaitingTime" Type="FLOAT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadSouth.Svr_AverageWaitingTime"/>
+		<DataElement Hostname="RoadSouth_Svr_IncomingCars" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadSouth.Svr_IncomingCars"/>
+		<DataElement Hostname="RoadSouth_Svr_TotalCarsPassed" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadSouth.Svr_TotalCarsPassed"/>
+		<DataElement Hostname="RoadWest_Svr_AverageWaitingTime" Type="FLOAT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadWest.Svr_AverageWaitingTime"/>
+		<DataElement Hostname="RoadWest_Svr_IncomingCars" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadWest.Svr_IncomingCars"/>
+		<DataElement Hostname="RoadWest_Svr_TotalCarsPassed" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="RoadWest.Svr_TotalCarsPassed"/>
+		<DataElement Hostname="TrafficControl_Svr_AverageWaitingTime" Type="FLOAT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficControl.Svr_AverageWaitingTime"/>
+		<DataElement Hostname="TrafficControl_Svr_AverageWaitingTimeMinutes" Type="UDINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficControl.Svr_AverageWaitingTimeMinutes"/>
+		<DataElement Hostname="TrafficControl_Svr_AverageWaitingTimeSeconds" Type="UDINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficControl.Svr_AverageWaitingTimeSeconds"/>
+		<DataElement Hostname="TrafficControl_Svr_EndlessMode" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficControl.Svr_EndlessMode"/>
+		<DataElement Hostname="TrafficControl_Svr_TrafficDensityFactor" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficControl.Svr_TrafficDensityFactor"/>
+		<DataElement Hostname="TrafficLightEast_Svr_Light" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficLightEast.Svr_Light"/>
+		<DataElement Hostname="TrafficLightNorth_Svr_Light" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficLightNorth.Svr_Light"/>
+		<DataElement Hostname="TrafficLightSouth_Svr_Light" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficLightSouth.Svr_Light"/>
+		<DataElement Hostname="TrafficLightWest_Svr_Light" Type="DINT" Writeprotected="true" Physic="" Unit="" Folder="" Label="TrafficLightWest.Svr_Light"/>
+	</DataSet>
+</Config>

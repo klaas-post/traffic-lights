@@ -58,7 +58,7 @@
 			Retentive      = "false">
 			<OPCSettingsDefault Visible="true" WriteProtected="false"/>
 		</Server>
-		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam"/>
+		<Server Name="Svr_MinTrafficTreshold" GUID="{D58A9211-EF97-4904-9E21-9715DA55706F}" Visualized="false" Initialize="true" DefValue="8" WriteProtected="false" Retentive="SRam" Comment="This variable sets the minimum amount of cars required for the traffic algorithm to give the the side those cars are waiting at extra time."/>
 		<Server
 			Name           = "Svr_TrafficDensityFactor"
 			GUID           = "{039E5C1A-719E-43D9-8610-CB5FC65EBC28}"
@@ -79,6 +79,7 @@
 		<Client Name="Obj_TrafficLightNorth" Required="true" Internal="false"/>
 		<Client Name="Obj_TrafficLightSouth" Required="true" Internal="false"/>
 		<Client Name="Obj_TrafficLightWest" Required="true" Internal="false"/>
+		<Client Name="Random1" Required="true" Internal="true"/>
 	</Channels>
 	<Separators>
 		<Clients>
@@ -86,6 +87,30 @@
 			<SepChn Position="1"/>
 		</Clients>
 	</Separators>
+	<Network Name="TrafficControl">
+		<!-- List of Components in this network -->
+		<Components>
+			<Object
+				Name       = "Random1"
+				GUID       = "{30344522-5219-4626-8CD7-CE17B25A409E}"
+				Class      = "Random"
+				Position   = "(180,840)"
+				Visualized = "false">
+				<Channels>
+					<Server Name="ClassSvr"/>
+				</Channels>
+			</Object>
+		</Components>
+		<Comments>
+		</Comments>
+		<!-- List of Connections in this network -->
+		<Connections>
+			<Connection Source="this.Random1" Destination="Random1.ClassSvr"/>
+		</Connections>
+		<!-- Headerfiles -->
+		<Options>
+		</Options>
+	</Network>
 </Class>
 *)
 TrafficControl : CLASS
@@ -117,6 +142,7 @@ TrafficControl : CLASS
 	Obj_RoadEast 	: CltChCmd_Road;
 	Obj_RoadSouth 	: CltChCmd_Road;
 	Obj_RoadWest 	: CltChCmd_Road;
+	Random1 	: CltChCmd_Random;
   //Variables:
 		TotalTraffic 	: DINT;
 		tSignalChanged 	: UDINT;
@@ -185,7 +211,7 @@ TrafficControl : CLASS
 	FUNCTION GLOBAL TAB @CT_;
 END_CLASS;
 
-#pragma usingLtd Random
+#pragma using Random
 #pragma usingLtd Road
 #pragma usingLtd TrafficLight
 
@@ -197,7 +223,7 @@ FUNCTION GLOBAL TAB TrafficControl::@CT_
 0$UINT,
 2#0100000000000010$UINT, //TY_TRAFFICCONTROL
 0$UINT, 0$UINT, (SIZEOF(::TrafficControl))$UINT, 
-9$UINT, 9$UINT, 0$UINT, 
+9$UINT, 10$UINT, 0$UINT, 
 TO_UDINT(444898770), "TrafficControl", //Class
 TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 //Servers:
@@ -220,6 +246,7 @@ TO_UDINT(0), 0, 0$UINT, 0$UINT, //Baseclass
 (::TrafficControl.Obj_RoadEast.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(2134922727), "Obj_RoadEast", TO_UDINT(2740267269), "Road", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_RoadSouth.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(2682681346), "Obj_RoadSouth", TO_UDINT(2740267269), "Road", 0$UINT, 0$UINT, 
 (::TrafficControl.Obj_RoadWest.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(2186895919), "Obj_RoadWest", TO_UDINT(2740267269), "Road", 0$UINT, 0$UINT, 
+(::TrafficControl.Random1.pCh)$UINT, _CH_CLT_OBJ$UINT, 2#0000000000000010$UINT, TO_UDINT(1901604068), "Random1", TO_UDINT(3871546707), "Random", 0$UINT, 0$UINT, 
 END_FUNCTION
 
 
@@ -295,7 +322,6 @@ END_FUNCTION
 //  Standard class methods
 //----------------------------------------------------------------------------------------------------
 
-// Standard Cywork, runs every set amount of time. 
 FUNCTION VIRTUAL GLOBAL TrafficControl::CyWork
     VAR_INPUT
         EAX            : UDINT;
@@ -337,7 +363,6 @@ END_FUNCTION
 //  Internally called methods
 //----------------------------------------------------------------------------------------------------
 
-// Read the inputs to get the amount of cars incoming.
 FUNCTION TrafficControl::ReadInputs
 
     CarsNorth := Obj_RoadNorth.Svr_IncomingCars.Read();
